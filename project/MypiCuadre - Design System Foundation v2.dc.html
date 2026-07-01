@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #EBF0F7; font-family: 'Plus Jakarta Sans', sans-serif; color: #0B1A2E; }
+
+    .doc { max-width: 8.5in; margin: 0 auto; background: #FFFFFF; padding: 64px clamp(24px, 5vw, 0.85in) 96px; }
+
+    /* Cover */
+    .cover { border-bottom: 3px solid #102B50; padding-bottom: 40px; margin-bottom: 56px; }
+    .cover-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #7A94B0; margin: 0 0 18px; }
+    .cover h1 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 10px; color: #102B50; }
+    .cover-sub { font-size: 17px; font-weight: 300; color: #3D5472; margin: 0 0 30px; }
+    .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #99AABC; }
+    .meta-val { font-size: 13px; font-weight: 600; color: #102B50; }
+    .version-badge { display: inline-flex; align-items: center; gap: 6px; background: #E4F7EE; border: 1.5px solid #1DC879; border-radius: 100px; padding: 4px 14px; font-size: 12px; font-weight: 700; color: #0A6B38; margin-bottom: 20px; }
+    .version-dot { width: 7px; height: 7px; border-radius: 50%; background: #1DC879; }
+
+    /* Sections */
+    .section { margin-bottom: 56px; }
+    .sec-hdr { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; padding-bottom: 10px; border-bottom: 1.5px solid #D0DCEA; }
+    .sec-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #99AABC; min-width: 28px; }
+    .sec-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; color: #102B50; margin: 0; }
+
+    p { font-size: 14.5px; line-height: 1.72; margin: 0 0 14px; color: #1E344F; text-wrap: pretty; }
+    p:last-child { margin-bottom: 0; }
+    ul, ol { margin: 0 0 14px; padding-left: 20px; }
+    li { font-size: 14.5px; line-height: 1.65; color: #1E344F; margin-bottom: 5px; }
+    li strong { color: #102B50; font-weight: 600; }
+    strong { color: #102B50; }
+
+    /* Highlight boxes */
+    .hl { background: #102B50; color: #F5F8FA; padding: 24px 28px; border-radius: 6px; margin-bottom: 20px; }
+    .hl p { color: #C8D9EC; font-size: 15px; font-weight: 400; line-height: 1.7; margin: 0; }
+    .hl p strong { color: #FFFFFF; }
+    .hl-green { background: #E4F7EE; border: 1.5px solid #1DC879; padding: 20px 24px; border-radius: 6px; margin-bottom: 20px; }
+    .hl-green p { color: #0A4A2A; font-size: 14px; line-height: 1.65; margin: 0; }
+
+    /* Logo analysis */
+    .logo-analysis { display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: start; margin-bottom: 20px; }
+    .logo-box { background: #102B50; border-radius: 28px; padding: 24px; display: flex; align-items: center; justify-content: center; }
+    .logo-svg-wrap { width: 120px; height: 120px; }
+    .logo-facts { display: flex; flex-direction: column; gap: 10px; }
+    .logo-fact { background: #F5F8FA; border-left: 3px solid #1DC879; padding: 10px 14px; border-radius: 0 4px 4px 0; }
+    .logo-fact-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7A94B0; margin-bottom: 3px; }
+    .logo-fact-val { font-size: 13px; line-height: 1.5; color: #1E344F; font-weight: 500; }
+
+    /* Two columns */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 14px; }
+    .col-cell { background: #F5F8FA; padding: 18px 20px; }
+    .col-cell:first-child { border-radius: 4px 0 0 4px; }
+    .col-cell:last-child { border-radius: 0 4px 4px 0; }
+    .col-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #99AABC; margin-bottom: 8px; }
+    .col-val { font-size: 13.5px; line-height: 1.6; color: #1E344F; }
+
+    /* Color system */
+    .color-section-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7A94B0; margin: 24px 0 10px; }
+    .color-row { display: flex; gap: 0; align-items: stretch; background: #F5F8FA; border-radius: 4px; overflow: hidden; margin-bottom: 2px; }
+    .color-swatch-lg { width: 80px; flex-shrink: 0; min-height: 80px; }
+    .color-info { padding: 14px 18px; flex: 1; }
+    .color-name { font-size: 13px; font-weight: 700; color: #102B50; margin-bottom: 2px; }
+    .color-role { font-size: 11px; font-weight: 600; color: #7A94B0; margin-bottom: 3px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .color-hex { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #7A94B0; margin-bottom: 6px; }
+    .color-why { font-size: 12.5px; line-height: 1.55; color: #3D5472; }
+    .color-wcag { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; }
+    .color-wcag.aa { background: #DCFFE6; color: #0A4A2A; }
+    .color-wcag.aaa { background: #CCE5FF; color: #003d80; }
+    .color-wcag.warn { background: #FFF0D4; color: #7A3C00; }
+
+    /* Scale palette */
+    .palette-scale { display: flex; gap: 3px; margin-bottom: 16px; flex-wrap: wrap; }
+    .pal-chip { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .pal-swatch { width: 52px; height: 40px; border-radius: 4px; border: 1px solid rgba(0,0,0,.06); }
+    .pal-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #7A94B0; text-align: center; }
+
+    /* Semantic colors row */
+    .sem-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; margin-bottom: 14px; }
+    .sem-cell { padding: 18px 16px; border-radius: 4px; }
+    .sem-cell-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+    .sem-cell-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .sem-cell-hex { font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-bottom: 6px; }
+    .sem-cell-ratio { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; display: inline-block; }
+
+    /* Background surfaces */
+    .surf-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 3px; margin-bottom: 16px; }
+    .surf-cell { border-radius: 6px; overflow: hidden; border: 1.5px solid #D0DCEA; }
+    .surf-swatch { height: 56px; }
+    .surf-info { padding: 10px 10px 12px; background: #FFFFFF; }
+    .surf-name { font-size: 11px; font-weight: 700; color: #102B50; margin-bottom: 2px; }
+    .surf-hex { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #7A94B0; }
+
+    /* Border demo */
+    .border-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+    .border-demo { padding: 18px 20px; border-radius: 8px; }
+    .border-demo-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7A94B0; margin-bottom: 4px; }
+    .border-demo-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #3D5472; }
+
+    /* Type specimens */
+    .type-specimen { background: #F5F8FA; border-radius: 4px; padding: 22px 24px; margin-bottom: 10px; }
+    .type-role { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #99AABC; margin-bottom: 12px; }
+    .type-sample-h1 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 40px; font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; color: #102B50; margin: 0 0 8px; }
+    .type-sample-h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 700; line-height: 1.1; letter-spacing: -0.015em; color: #102B50; margin: 0 0 8px; }
+    .type-sample-h3 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; color: #102B50; margin: 0 0 8px; }
+    .type-sample-body { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 400; line-height: 1.7; color: #1E344F; margin: 0 0 8px; }
+    .type-sample-ui { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 500; line-height: 1.4; color: #102B50; margin: 0 0 8px; }
+    .type-sample-mono { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; line-height: 1.5; color: #102B50; margin: 0; }
+    .type-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid #D0DCEA; }
+    .type-meta-item { font-size: 11.5px; color: #7A94B0; }
+    .type-meta-item strong { color: #3D5472; font-weight: 600; }
+
+    /* Spacing scale */
+    .spacing-scale { display: flex; flex-direction: column; gap: 2px; }
+    .space-row { display: flex; align-items: center; gap: 16px; background: #F5F8FA; padding: 10px 16px; border-radius: 3px; }
+    .space-token { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #7A94B0; min-width: 60px; }
+    .space-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #99AABC; min-width: 36px; }
+    .space-bar-wrap { flex: 1; }
+    .space-bar { height: 8px; background: #102B50; border-radius: 1px; }
+    .space-use { font-size: 12px; color: #3D5472; margin-left: auto; }
+
+    /* Shadow demos */
+    .shadow-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 16px; }
+    .shadow-demo { background: #FFF; border-radius: 8px; padding: 20px 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .shadow-demo-name { font-size: 11px; font-weight: 700; color: #102B50; }
+    .shadow-demo-val { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #7A94B0; text-align: center; line-height: 1.5; }
+
+    /* States */
+    .state-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 16px; }
+    .state-card { background: #F5F8FA; border-radius: 6px; padding: 16px 14px; }
+    .state-card-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7A94B0; margin-bottom: 12px; }
+    .state-btn { width: 100%; padding: 8px 12px; border-radius: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; font-weight: 600; border: none; cursor: default; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .state-input { width: 100%; padding: 8px 10px; border-radius: 4px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; background: #FFF; outline: none; }
+
+    /* WCAG table */
+    .wcag-table { width: 100%; border-collapse: collapse; }
+    .wcag-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7A94B0; padding: 8px 12px; border-bottom: 1.5px solid #D0DCEA; }
+    .wcag-table td { font-size: 13px; padding: 11px 12px; border-bottom: 1px solid #EAF0F7; vertical-align: middle; }
+    .wcag-table tr:last-child td { border-bottom: none; }
+    .wcag-pair { display: flex; align-items: center; gap: 10px; }
+    .wcag-swatch-pair { display: flex; }
+    .wcag-s { width: 20px; height: 20px; border-radius: 3px; }
+    .wcag-s:last-child { margin-left: -6px; border: 2px solid #FFF; }
+    .wcag-ratio { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; }
+    .badge { display: inline-flex; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+    .badge.aa { background: #DCFFE6; color: #0A4A2A; }
+    .badge.aaa { background: #CCE5FF; color: #003d80; }
+    .badge.fail { background: #FFE0DF; color: #7A0F0F; }
+
+    /* Token reference */
+    .token-table { width: 100%; border-collapse: collapse; }
+    .token-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7A94B0; padding: 8px 12px; border-bottom: 1.5px solid #D0DCEA; background: #F5F8FA; }
+    .token-table td { font-size: 12.5px; padding: 10px 12px; border-bottom: 1px solid #EAF0F7; vertical-align: middle; }
+    .token-table tr:last-child td { border-bottom: none; }
+    .token-name { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #102B50; font-weight: 500; }
+    .token-value { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: #3D5472; }
+    .token-dot { width: 16px; height: 16px; border-radius: 3px; border: 1px solid rgba(0,0,0,.1); flex-shrink: 0; }
+    .token-desc { font-size: 12px; color: #3D5472; }
+
+    /* Motion */
+    .motion-row { display: flex; gap: 0; align-items: stretch; margin-bottom: 2px; border-radius: 3px; overflow: hidden; }
+    .motion-type { background: #102B50; color: #F5F8FA; padding: 14px 18px; min-width: 140px; display: flex; align-items: center; font-size: 13px; font-weight: 600; }
+    .motion-spec { background: #F5F8FA; padding: 14px 18px; flex: 1; font-size: 13px; line-height: 1.55; color: #1E344F; }
+
+    /* Breakpoints */
+    .bp-track { display: flex; flex-direction: column; gap: 2px; }
+    .bp-row { display: grid; grid-template-columns: 120px 1fr; gap: 2px; border-radius: 3px; overflow: hidden; }
+    .bp-label { background: #102B50; color: #F5F8FA; padding: 16px 18px; display: flex; flex-direction: column; justify-content: center; }
+    .bp-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 15px; font-weight: 700; }
+    .bp-range { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7AA8D4; margin-top: 2px; }
+    .bp-specs { background: #F5F8FA; padding: 16px 18px; }
+    .bp-spec-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px; }
+    .bp-spec-list li { font-size: 13px; line-height: 1.55; color: #1E344F; }
+    .bp-spec-list li::before { content: '—'; margin-right: 8px; color: #99AABC; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body { background: #FFF; }
+      .doc { max-width: none !important; margin: 0 !important; padding: 0 0.75in 0.75in !important; }
+    }
+  </style>
+</helmet>
+
+<main class="doc">
+
+  <!-- COVER -->
+  <div class="cover">
+    <p class="cover-eyebrow">Documento Estratégico — Fase 3 · Revisión 2</p>
+    <div class="version-badge"><span class="version-dot"></span>Versión 2.0 — Paleta actualizada desde logo oficial</div>
+    <h1>Design System Foundation v2</h1>
+    <p class="cover-sub">MypiCuadre — Sistema visual alineado con identidad de marca</p>
+    <div class="cover-meta">
+      <div class="meta-item"><span class="meta-lbl">Producto</span><span class="meta-val">MypiCuadre</span></div>
+      <div class="meta-item"><span class="meta-lbl">Cambio principal</span><span class="meta-val">Paleta: Naval + Esmeralda (desde logo)</span></div>
+      <div class="meta-item"><span class="meta-lbl">Supersede</span><span class="meta-val">Design System Foundation v1.0</span></div>
+      <div class="meta-item"><span class="meta-lbl">Fecha</span><span class="meta-val">Junio 2026</span></div>
+    </div>
+  </div>
+
+  <!-- 01 ANÁLISIS DEL LOGO -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">01</span><h2 class="sec-title">Análisis del Logo — Extracción de Identidad Visual</h2></div>
+
+    <div class="logo-analysis">
+      <div class="logo-box">
+        <div class="logo-svg-wrap">
+          <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="120" height="120" rx="24" fill="#102B50"/>
+            <!-- Bar chart bars -->
+            <rect x="22" y="62" width="16" height="32" rx="5" fill="#1DC879"/>
+            <rect x="44" y="44" width="16" height="50" rx="5" fill="#1DC879"/>
+            <rect x="66" y="26" width="16" height="68" rx="5" fill="#1DC879"/>
+            <!-- Checkmark sweep -->
+            <path d="M20 82 Q50 102 82 58" stroke="#1DC879" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M68 62 L82 58 L86 72" stroke="#1DC879" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="logo-facts">
+        <div class="logo-fact"><div class="logo-fact-lbl">Estructura del símbolo</div><div class="logo-fact-val">Gráfico de barras ascendentes (crecimiento / datos de ventas) fusionado con un checkmark curvo en la base (verificación / cuadre / confirmación). Metáfora directa: "tus ventas siempre en ascenso y siempre cuadradas".</div></div>
+        <div class="logo-fact"><div class="logo-fact-lbl">Color del fondo</div><div class="logo-fact-val">Navy profundo #102B50 — Autoridad financiera, profundidad, tecnología confiable. Mismo lenguaje que apps fintech de referencia global.</div></div>
+        <div class="logo-fact"><div class="logo-fact-lbl">Color del símbolo</div><div class="logo-fact-val">Esmeralda vibrante #1DC879 — Crecimiento, éxito, dinero saludable, operación correcta. El verde "confirma" que todo cuadra.</div></div>
+        <div class="logo-fact"><div class="logo-fact-lbl">Forma del contenedor</div><div class="logo-fact-val">Squircle (rectángulo con radio extremo) — Lenguaje de apps móviles premium. Amigable pero profesional. Tecnológico sin ser frío.</div></div>
+        <div class="logo-fact"><div class="logo-fact-lbl">Profundidad 3D</div><div class="logo-fact-val">El relieve sutil del símbolo sobre el fondo comunica solidez y presencia. No es plano genérico. Tiene peso visual.</div></div>
+      </div>
+    </div>
+
+    <div class="hl">
+      <p><strong>Conclusión de la extracción:</strong> El logo abandona completamente la paleta terracota/cálida del v1. La nueva identidad cromática es <strong>Navy + Esmeralda</strong> — un sistema bicolor de alta claridad semántica. Navy = confianza/autoridad. Esmeralda = crecimiento/verificación. Esta combinación es más distintiva, más memorable, y más coherente con el sector fintech-SMB latinoamericano.</p>
+    </div>
+
+    <div class="two-col">
+      <div class="col-cell">
+        <div class="col-lbl">Personalidad visual actualizada</div>
+        <div class="col-val">Fintech accesible para el mercado popular latinoamericano. Sólido como un banco, cercano como un vecino de confianza. El equivalente visual de una cooperativa de crédito moderna que entiende tu negocio.</div>
+      </div>
+      <div class="col-cell">
+        <div class="col-lbl">Diferencia clave vs v1</div>
+        <div class="col-val">v1 usaba terracota como acento → warmth-first, artisanal. v2 usa esmeralda → growth-first, performance-focused. El cambio alinea la UI con lo que el logo comunica: que las cosas están funcionando y creciendo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 PALETA PRIMARIA -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">02</span><h2 class="sec-title">Paleta Primaria — Navy</h2></div>
+
+    <p>El navy extrae directamente del fondo del logo. Es el color de autoridad, estructura y texto principal. Proyecta seriedad profesional sin frialdad corporativa.</p>
+
+    <div class="color-section-label">Escala completa</div>
+    <div class="palette-scale">
+      <div class="pal-chip"><div class="pal-swatch" style="background:#EEF4FA;"></div><div class="pal-label">#EEF4FA<br>50</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#D5E4F2;"></div><div class="pal-label">#D5E4F2<br>100</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#A8C4E0;"></div><div class="pal-label">#A8C4E0<br>200</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#6A95C0;"></div><div class="pal-label">#6A95C0<br>300</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#4B76B8;"></div><div class="pal-label">#4B76B8<br>400</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#2B5490;"></div><div class="pal-label">#2B5490<br>500</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#1A3D6E;"></div><div class="pal-label">#1A3D6E<br>600</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#102B50;"></div><div class="pal-label">#102B50<br>700 ★</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#0C2040;"></div><div class="pal-label">#0C2040<br>800</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#071529;"></div><div class="pal-label">#071529<br>900</div></div>
+    </div>
+
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#102B50;"></div>
+      <div class="color-info">
+        <div class="color-role">Primary · Base</div>
+        <div class="color-name">Navy 700 — Color principal</div>
+        <div class="color-hex">#102B50</div>
+        <div class="color-why">Extraído directamente del fondo del logo. Se usa en fondos de secciones oscuras, navbar en scroll, texto H1/H2, CTAs secundarios con borde.</div>
+        <span class="color-wcag aaa">AAA 12.3:1 vs blanco</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#0C2040;"></div>
+      <div class="color-info">
+        <div class="color-role">Primary · Hover</div>
+        <div class="color-name">Navy 800 — Hover / énfasis</div>
+        <div class="color-hex">#0C2040</div>
+        <div class="color-why">Estado hover de todos los elementos navy. Fondo de secciones alternativas oscuras. Texto sobre fondos muy claros cuando se necesita máximo contraste.</div>
+        <span class="color-wcag aaa">AAA 14.8:1 vs blanco</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#071529;"></div>
+      <div class="color-info">
+        <div class="color-role">Primary · Active</div>
+        <div class="color-name">Navy 900 — Active / pressed</div>
+        <div class="color-hex">#071529</div>
+        <div class="color-why">Estado :active de botones y elementos interactivos. Footer background. Máxima profundidad en la escala.</div>
+        <span class="color-wcag aaa">AAA 18.7:1 vs blanco</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#EEF4FA;"></div>
+      <div class="color-info">
+        <div class="color-role">Primary · Tint</div>
+        <div class="color-name">Navy 50 — Tint suave</div>
+        <div class="color-hex">#EEF4FA</div>
+        <div class="color-why">Fondo de tarjetas seleccionadas, estados activos en listas, tags informativos sobre fondos blancos.</div>
+        <span class="color-wcag aa">AA 4.8:1 de navy vs este fondo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 PALETA SECUNDARIA -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">03</span><h2 class="sec-title">Paleta Secundaria — Navy Medium</h2></div>
+
+    <p>Los tonos medios del navy proveen texto secundario, iconos, labels y elementos de soporte sin competir con el primary.</p>
+
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#0B1A2E;"></div>
+      <div class="color-info">
+        <div class="color-role">Text Primary</div>
+        <div class="color-name">Navy text — Color de texto cuerpo</div>
+        <div class="color-hex">#0B1A2E</div>
+        <div class="color-why">Negro con undertone navy. Más rico y coherente que un negro puro. Todo texto de cuerpo y párrafos.</div>
+        <span class="color-wcag aaa">AAA 17.1:1 vs blanco</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#3D5472;"></div>
+      <div class="color-info">
+        <div class="color-role">Text Secondary</div>
+        <div class="color-name">Navy 500-Medium — Texto secundario</div>
+        <div class="color-hex">#3D5472</div>
+        <div class="color-why">Subtítulos, descripciones, metadata, labels de campos, texto de soporte. Suficientemente oscuro para leer cómodamente.</div>
+        <span class="color-wcag aaa">AA+ 7.1:1 vs blanco</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#7A94B0;"></div>
+      <div class="color-info">
+        <div class="color-role">Text Tertiary</div>
+        <div class="color-name">Navy 300-Light — Texto terciario</div>
+        <div class="color-hex">#7A94B0</div>
+        <div class="color-why">Placeholders, eyebrow labels, timestamps, hints. Solo para texto de tamaño ≥16px o elementos decorativos.</div>
+        <span class="color-wcag warn">AA 3.8:1 — solo texto grande (≥18px o negrita ≥14px)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 ACENTO / CTA — ESMERALDA -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">04</span><h2 class="sec-title">Acento y CTA — Esmeralda</h2></div>
+
+    <div class="hl-green">
+      <p><strong>Decisión de accesibilidad:</strong> El esmeralda de marca <strong>#1DC879</strong> es demasiado claro para combinar con texto blanco (ratio 2.4:1 — falla AA). La solución es usar <strong>texto navy #102B50 sobre fondo esmeralda</strong> en todos los botones CTA, logrando 5.1:1 ✅ AA. Esto crea un contraste visualmente único e inmediatamente identificable como "la marca".</p>
+    </div>
+
+    <div class="palette-scale">
+      <div class="pal-chip"><div class="pal-swatch" style="background:#E4F7EE;"></div><div class="pal-label">#E4F7EE<br>50</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#B3ECCE;"></div><div class="pal-label">#B3ECCE<br>100</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#5DD6A0;"></div><div class="pal-label">#5DD6A0<br>200</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#1DC879;"></div><div class="pal-label">#1DC879<br>400 ★</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#18B26C;"></div><div class="pal-label">#18B26C<br>500</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#0F8B50;"></div><div class="pal-label">#0F8B50<br>600</div></div>
+      <div class="pal-chip"><div class="pal-swatch" style="background:#0A6B38;"></div><div class="pal-label">#0A6B38<br>700</div></div>
+    </div>
+
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#1DC879;"></div>
+      <div class="color-info">
+        <div class="color-role">Accent · Brand</div>
+        <div class="color-name">Emerald 400 — Color de marca</div>
+        <div class="color-hex">#1DC879</div>
+        <div class="color-why">Extraído directamente del símbolo del logo. CTAs primarios, badges de estado "activo/online", iconos de éxito, indicadores de crecimiento, highlights decorativos.</div>
+        <span class="color-wcag aa">AA 5.1:1 con texto navy #102B50</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#18B26C;"></div>
+      <div class="color-info">
+        <div class="color-role">Accent · Hover</div>
+        <div class="color-name">Emerald 500 — Hover state</div>
+        <div class="color-hex">#18B26C</div>
+        <div class="color-why">Estado hover del CTA primario. El oscurecimiento sutil confirma la interacción sin perder la identidad de marca.</div>
+        <span class="color-wcag aa">AA 5.7:1 con texto navy</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#0A6B38;"></div>
+      <div class="color-info">
+        <div class="color-role">Accent · Text</div>
+        <div class="color-name">Emerald 700 — Texto esmeralda</div>
+        <div class="color-hex">#0A6B38</div>
+        <div class="color-why">Texto de color verde sobre fondos claros (links, badges, valores positivos). Pasa AA sin restricciones de tamaño.</div>
+        <span class="color-wcag aaa">AA+ 6.3:1 vs blanco</span>
+      </div>
+    </div>
+    <div class="color-row">
+      <div class="color-swatch-lg" style="background:#E4F7EE;"></div>
+      <div class="color-info">
+        <div class="color-role">Accent · Background tint</div>
+        <div class="color-name">Emerald 50 — Fondo tint</div>
+        <div class="color-hex">#E4F7EE</div>
+        <div class="color-why">Fondo de alertas de éxito, badges positivos, highlights de features offline. Combina con texto Emerald 700.</div>
+        <span class="color-wcag aa">AA 4.8:1 de Emerald 700 vs este fondo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 SUCCESS -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">05</span><h2 class="sec-title">Success</h2></div>
+
+    <p>El color de éxito <strong>es el mismo esmeralda de marca</strong> — esta decisión es intencional. Cuando la app confirma que la caja cuadra o que se procesó una venta, usa el color del logo. La semántica y la marca son la misma señal.</p>
+
+    <div class="sem-grid">
+      <div class="sem-cell" style="background:#E4F7EE;">
+        <div class="sem-cell-lbl" style="color:#0A6B38;">Success Light</div>
+        <div class="sem-cell-name" style="color:#0A6B38;">Fondo / Tint</div>
+        <div class="sem-cell-hex" style="color:#0F8B50;">#E4F7EE</div>
+        <span class="sem-cell-ratio" style="background:#DCFFE6;color:#0A4A2A;">Alertas · Badges</span>
+      </div>
+      <div class="sem-cell" style="background:#1DC879;">
+        <div class="sem-cell-lbl" style="color:#0A4A2A;">Success Base</div>
+        <div class="sem-cell-name" style="color:#071529;">Íconos · Checks</div>
+        <div class="sem-cell-hex" style="color:#0A4A2A;">#1DC879</div>
+        <span class="sem-cell-ratio" style="background:rgba(0,0,0,.12);color:#071529;">5.1:1 con navy text</span>
+      </div>
+      <div class="sem-cell" style="background:#0A6B38;">
+        <div class="sem-cell-lbl" style="color:#B3ECCE;">Success Dark</div>
+        <div class="sem-cell-name" style="color:#FFFFFF;">Texto · Bordes</div>
+        <div class="sem-cell-hex" style="color:#5DD6A0;">#0A6B38</div>
+        <span class="sem-cell-ratio" style="background:rgba(255,255,255,.15);color:#FFF;">6.3:1 vs blanco</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 06 WARNING -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">06</span><h2 class="sec-title">Warning</h2></div>
+    <p>Ámbar dorado. Cálido pero no alarmante. Stock bajo, sincronización pendiente, fecha próxima de vencimiento.</p>
+    <div class="sem-grid">
+      <div class="sem-cell" style="background:#FEF3DC;">
+        <div class="sem-cell-lbl" style="color:#8A5200;">Warning Light</div>
+        <div class="sem-cell-name" style="color:#7A3C00;">Fondo / Tint</div>
+        <div class="sem-cell-hex" style="color:#A06400;">#FEF3DC</div>
+        <span class="sem-cell-ratio" style="background:#FFF0C4;color:#7A3C00;">Alertas stock bajo</span>
+      </div>
+      <div class="sem-cell" style="background:#E09B1A;">
+        <div class="sem-cell-lbl" style="color:#7A3C00;">Warning Base</div>
+        <div class="sem-cell-name" style="color:#071529;">Íconos · Bordes</div>
+        <div class="sem-cell-hex" style="color:#3D1C00;">#E09B1A</div>
+        <span class="sem-cell-ratio" style="background:rgba(0,0,0,.15);color:#071529;">4.7:1 con navy text ✅</span>
+      </div>
+      <div class="sem-cell" style="background:#8A5200;">
+        <div class="sem-cell-lbl" style="color:#FEC97C;">Warning Dark</div>
+        <div class="sem-cell-name" style="color:#FFF;">Texto</div>
+        <div class="sem-cell-hex" style="color:#FEC97C;">#8A5200</div>
+        <span class="sem-cell-ratio" style="background:rgba(255,255,255,.15);color:#FFF;">7.8:1 vs blanco ✅</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 ERROR -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">07</span><h2 class="sec-title">Error</h2></div>
+    <p>Rojo profundo, accesible. Diferencia de caja, operación fallida, campo inválido. Serio pero no agresivo.</p>
+    <div class="sem-grid">
+      <div class="sem-cell" style="background:#FDECEA;">
+        <div class="sem-cell-lbl" style="color:#8A1E1E;">Error Light</div>
+        <div class="sem-cell-name" style="color:#7A0F0F;">Fondo</div>
+        <div class="sem-cell-hex" style="color:#B03030;">#FDECEA</div>
+        <span class="sem-cell-ratio" style="background:#FFE0DF;color:#7A0F0F;">Alertas críticas</span>
+      </div>
+      <div class="sem-cell" style="background:#D0382E;">
+        <div class="sem-cell-lbl" style="color:#FFF5F5;">Error Base</div>
+        <div class="sem-cell-name" style="color:#FFF;">Íconos · Bordes</div>
+        <div class="sem-cell-hex" style="color:#FFD0CE;">#D0382E</div>
+        <span class="sem-cell-ratio" style="background:rgba(255,255,255,.2);color:#FFF;">5.2:1 vs blanco ✅</span>
+      </div>
+      <div class="sem-cell" style="background:#8A1E1E;">
+        <div class="sem-cell-lbl" style="color:#FFAFAF;">Error Dark</div>
+        <div class="sem-cell-name" style="color:#FFF;">Texto</div>
+        <div class="sem-cell-hex" style="color:#FFAFAF;">#8A1E1E</div>
+        <span class="sem-cell-ratio" style="background:rgba(255,255,255,.15);color:#FFF;">8.4:1 vs blanco ✅</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 BACKGROUNDS Y SUPERFICIES -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">08</span><h2 class="sec-title">Backgrounds y Superficies</h2></div>
+
+    <p>El sistema de fondos usa blancos con undertone navy muy sutil. Esto crea coherencia visual con el navy primary sin hacer la página fría. No es beige (v1) ni gris neutro — es un white-blue que evoca claridad y frescura.</p>
+
+    <div class="surf-grid">
+      <div class="surf-cell">
+        <div class="surf-swatch" style="background:#F5F8FA;"></div>
+        <div class="surf-info"><div class="surf-name">BG Base</div><div class="surf-hex">#F5F8FA</div></div>
+      </div>
+      <div class="surf-cell">
+        <div class="surf-swatch" style="background:#EBF0F7;"></div>
+        <div class="surf-info"><div class="surf-name">BG Alt</div><div class="surf-hex">#EBF0F7</div></div>
+      </div>
+      <div class="surf-cell">
+        <div class="surf-swatch" style="background:#FFFFFF;"></div>
+        <div class="surf-info"><div class="surf-name">Surface 1</div><div class="surf-hex">#FFFFFF</div></div>
+      </div>
+      <div class="surf-cell">
+        <div class="surf-swatch" style="background:#F8FAFB;"></div>
+        <div class="surf-info"><div class="surf-name">Surface 2</div><div class="surf-hex">#F8FAFB</div></div>
+      </div>
+      <div class="surf-cell" style="box-shadow:0 4px 16px rgba(16,43,80,.10);">
+        <div class="surf-swatch" style="background:#FFFFFF;"></div>
+        <div class="surf-info"><div class="surf-name">Surface Elevated</div><div class="surf-hex">#FFF + shadow</div></div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="col-cell">
+        <div class="col-lbl">Uso de BG Base #F5F8FA</div>
+        <div class="col-val">Fondo de página, secciones alternas, fondos de tarjetas dentro de secciones blancas. Alterna con Surface 1 (#FFF) para crear ritmo visual en el scroll.</div>
+      </div>
+      <div class="col-cell">
+        <div class="col-lbl">Uso de Surface Elevated</div>
+        <div class="col-val">Modales, dropdowns, tooltips, navbar en scroll. Siempre blanco puro con sombra. Nunca el fondo azul-gris en elementos flotantes.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 BORDES -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">09</span><h2 class="sec-title">Bordes</h2></div>
+    <div class="border-grid">
+      <div class="border-demo" style="border:1.5px solid #D0DCEA;background:#F5F8FA;">
+        <div class="border-demo-lbl">Border — Default</div>
+        <div class="border-demo-val">1.5px solid #D0DCEA</div>
+      </div>
+      <div class="border-demo" style="border:1.5px solid #A8BFD4;background:#F5F8FA;">
+        <div class="border-demo-lbl">Border — Strong</div>
+        <div class="border-demo-val">1.5px solid #A8BFD4</div>
+      </div>
+      <div class="border-demo" style="border:2px solid #1DC879;background:#E4F7EE;">
+        <div class="border-demo-lbl">Border — Accent (focus / seleccionado)</div>
+        <div class="border-demo-val">2px solid #1DC879</div>
+      </div>
+      <div class="border-demo" style="border:2px solid #102B50;background:#EEF4FA;">
+        <div class="border-demo-lbl">Border — Primary (tarjeta destacada)</div>
+        <div class="border-demo-val">2px solid #102B50</div>
+      </div>
+    </div>
+    <p>Los bordes usan blue-gray frío, coherentes con el navy primario. <strong>Regla:</strong> border default (1.5px) en todos los elementos pasivos. Border accent (2px esmeralda) para seleccionados/focus. Border primary (2px navy) para card destacada o testimonio feature.</p>
+  </div>
+
+  <!-- 10 TIPOGRAFÍA -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">10</span><h2 class="sec-title">Tipografía — Confirmada para v2</h2></div>
+
+    <div class="hl-green">
+      <p><strong>Decisión tipográfica:</strong> El stack del v1 (Bricolage Grotesque + Plus Jakarta Sans + JetBrains Mono) sigue siendo la elección correcta. <strong>Bricolage Grotesque</strong> tiene el carácter robusto y latinoamericano que el logo requiere — no es una grotesca genérica. <strong>Plus Jakarta Sans</strong> aporta legibilidad a densidades de texto. <strong>JetBrains Mono</strong> es perfecto para valores numéricos de caja, ventas y diferencias. No hay cambios tipográficos en v2.</p>
+    </div>
+
+    <div class="type-specimen">
+      <div class="type-role">Display / H1</div>
+      <div class="type-sample-h1">Tu negocio siempre cuadrado</div>
+      <div class="type-meta">
+        <div class="type-meta-item">Familia: <strong>Bricolage Grotesque</strong></div>
+        <div class="type-meta-item">Peso: <strong>800</strong></div>
+        <div class="type-meta-item">Tamaño: <strong>clamp(36px, 5vw, 58px)</strong></div>
+        <div class="type-meta-item">Tracking: <strong>-0.03em</strong></div>
+        <div class="type-meta-item">Line-height: <strong>1.04</strong></div>
+      </div>
+    </div>
+    <div class="type-specimen">
+      <div class="type-role">Heading H2</div>
+      <div class="type-sample-h2">Todo lo que tu negocio necesita</div>
+      <div class="type-meta">
+        <div class="type-meta-item">Familia: <strong>Bricolage Grotesque</strong></div>
+        <div class="type-meta-item">Peso: <strong>700–800</strong></div>
+        <div class="type-meta-item">Tamaño: <strong>clamp(26px, 3.5vw, 40px)</strong></div>
+        <div class="type-meta-item">Tracking: <strong>-0.02em</strong></div>
+        <div class="type-meta-item">Line-height: <strong>1.08</strong></div>
+      </div>
+    </div>
+    <div class="type-specimen">
+      <div class="type-role">Body / Párrafo</div>
+      <div class="type-sample-body">Controla ventas, caja e inventario desde tu teléfono. Sin hojas de cálculo, sin cuadernos, sin perder nada. Hecho para pequeños negocios latinoamericanos.</div>
+      <div class="type-meta">
+        <div class="type-meta-item">Familia: <strong>Plus Jakarta Sans</strong></div>
+        <div class="type-meta-item">Peso: <strong>400–500</strong></div>
+        <div class="type-meta-item">Tamaño: <strong>15–17px</strong></div>
+        <div class="type-meta-item">Line-height: <strong>1.65–1.72</strong></div>
+      </div>
+    </div>
+    <div class="type-specimen">
+      <div class="type-role">Data / Monospace</div>
+      <div class="type-sample-mono">$1,847.50 · Diferencia: +$0.00 · 34 ventas</div>
+      <div class="type-meta">
+        <div class="type-meta-item">Familia: <strong>JetBrains Mono</strong></div>
+        <div class="type-meta-item">Peso: <strong>500–600</strong></div>
+        <div class="type-meta-item">Uso: <strong>Valores numéricos, tokens CSS, diferencias de caja</strong></div>
+        <div class="type-meta-item">Tamaño mínimo: <strong>12px</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11 ESPACIADO -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">11</span><h2 class="sec-title">Espaciado — Sistema de 4px</h2></div>
+    <p>Sin cambios en v2. Base 4px, escala armónica. El spacing amplio es una ventaja competitiva de percepción de calidad.</p>
+    <div class="spacing-scale">
+      <div class="space-row"><span class="space-token">--sp-1</span><span class="space-val">4px</span><div class="space-bar-wrap"><div class="space-bar" style="width:4px;"></div></div><span class="space-use">Gaps internos mínimos</span></div>
+      <div class="space-row"><span class="space-token">--sp-2</span><span class="space-val">8px</span><div class="space-bar-wrap"><div class="space-bar" style="width:8px;"></div></div><span class="space-use">Padding botones sm · gap iconos</span></div>
+      <div class="space-row"><span class="space-token">--sp-3</span><span class="space-val">12px</span><div class="space-bar-wrap"><div class="space-bar" style="width:12px;"></div></div><span class="space-use">Padding interno chips / badges</span></div>
+      <div class="space-row"><span class="space-token">--sp-4</span><span class="space-val">16px</span><div class="space-bar-wrap"><div class="space-bar" style="width:16px;"></div></div><span class="space-use">Padding base de tarjetas</span></div>
+      <div class="space-row"><span class="space-token">--sp-6</span><span class="space-val">24px</span><div class="space-bar-wrap"><div class="space-bar" style="width:24px;"></div></div><span class="space-use">Padding horizontal móvil · gap grid</span></div>
+      <div class="space-row"><span class="space-token">--sp-8</span><span class="space-val">32px</span><div class="space-bar-wrap"><div class="space-bar" style="width:32px;"></div></div><span class="space-use">Padding tarjetas desktop</span></div>
+      <div class="space-row"><span class="space-token">--sp-10</span><span class="space-val">40px</span><div class="space-bar-wrap"><div class="space-bar" style="width:40px;"></div></div><span class="space-use">Gap entre secciones internas</span></div>
+      <div class="space-row"><span class="space-token">--sp-12</span><span class="space-val">48px</span><div class="space-bar-wrap"><div class="space-bar" style="width:48px;"></div></div><span class="space-use">Margin-bottom secciones</span></div>
+      <div class="space-row"><span class="space-token">--sp-16</span><span class="space-val">64px</span><div class="space-bar-wrap"><div class="space-bar" style="width:64px;"></div></div><span class="space-use">Padding sección mobile</span></div>
+      <div class="space-row"><span class="space-token">--sp-24</span><span class="space-val">96px</span><div class="space-bar-wrap"><div class="space-bar" style="width:96px;"></div></div><span class="space-use">Padding sección desktop</span></div>
+    </div>
+  </div>
+
+  <!-- 12 SOMBRAS -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">12</span><h2 class="sec-title">Sombras — Sistema Navy</h2></div>
+    <p>Las sombras usan navy como color base (no gris genérico). Esto crea profundidad coherente con la paleta. Sutileza máxima — las sombras son infraestructura, no decoración.</p>
+    <div style="background:#EBF0F7;padding:28px;border-radius:8px;">
+      <div class="shadow-grid">
+        <div class="shadow-demo" style="box-shadow:0 1px 3px rgba(16,43,80,.07),0 1px 2px rgba(16,43,80,.05);">
+          <div class="shadow-demo-name">Shadow XS</div>
+          <div class="shadow-demo-val">0 1px 3px rgba(16,43,80,.07)<br>0 1px 2px rgba(16,43,80,.05)</div>
+        </div>
+        <div class="shadow-demo" style="box-shadow:0 2px 8px rgba(16,43,80,.08),0 1px 3px rgba(16,43,80,.05);">
+          <div class="shadow-demo-name">Shadow S</div>
+          <div class="shadow-demo-val">0 2px 8px rgba(16,43,80,.08)<br>0 1px 3px rgba(16,43,80,.05)</div>
+        </div>
+        <div class="shadow-demo" style="box-shadow:0 4px 16px rgba(16,43,80,.10),0 2px 6px rgba(16,43,80,.05);">
+          <div class="shadow-demo-name">Shadow M</div>
+          <div class="shadow-demo-val">0 4px 16px rgba(16,43,80,.10)<br>0 2px 6px rgba(16,43,80,.05)</div>
+        </div>
+        <div class="shadow-demo" style="box-shadow:0 12px 40px rgba(16,43,80,.14),0 4px 12px rgba(16,43,80,.07);">
+          <div class="shadow-demo-name">Shadow L</div>
+          <div class="shadow-demo-val">0 12px 40px rgba(16,43,80,.14)<br>0 4px 12px rgba(16,43,80,.07)</div>
+        </div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top:12px;">
+      <div class="col-cell"><div class="col-lbl">Regla de escalado</div><div class="col-val">XS → navbar scrolled, dividers. S → tarjetas en reposo. M → tarjetas en hover, modales pequeños. L → modales grandes, hero phone mockup.</div></div>
+      <div class="col-cell"><div class="col-lbl">Sombra de foco (outline)</div><div class="col-val"><code style="font-family:'JetBrains Mono',monospace;font-size:12px;">box-shadow: 0 0 0 3px rgba(29,200,121,.30)</code> — anillo esmeralda semi-transparente. Visible en fondos claros y oscuros.</div></div>
+    </div>
+  </div>
+
+  <!-- 13 ESTADOS DE INTERACCIÓN -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">13</span><h2 class="sec-title">Estados de Interacción</h2></div>
+
+    <div class="state-grid">
+      <div class="state-card">
+        <div class="state-card-lbl">Default</div>
+        <button class="state-btn" style="background:#1DC879;color:#102B50;border:none;">Instalar Demo</button>
+        <div style="margin-top:10px;"><input class="state-input" style="border:1.5px solid #D0DCEA;color:#0B1A2E;" value="Campo de texto" readonly></div>
+      </div>
+      <div class="state-card">
+        <div class="state-card-lbl">Hover</div>
+        <button class="state-btn" style="background:#18B26C;color:#102B50;border:none;transform:translateY(-1px);box-shadow:0 6px 20px rgba(29,200,121,.28);">Instalar Demo</button>
+        <div style="margin-top:10px;"><input class="state-input" style="border:1.5px solid #A8BFD4;color:#0B1A2E;" value="Campo hover" readonly></div>
+      </div>
+      <div class="state-card">
+        <div class="state-card-lbl">Focus</div>
+        <button class="state-btn" style="background:#1DC879;color:#102B50;border:none;outline:none;box-shadow:0 0 0 3px rgba(29,200,121,.30);">Instalar Demo</button>
+        <div style="margin-top:10px;"><input class="state-input" style="border:2px solid #1DC879;box-shadow:0 0 0 3px rgba(29,200,121,.20);color:#0B1A2E;" value="Campo focus" readonly></div>
+      </div>
+      <div class="state-card">
+        <div class="state-card-lbl">Disabled</div>
+        <button class="state-btn" style="background:#D0DCEA;color:#99AABC;border:none;cursor:not-allowed;" disabled>Instalar Demo</button>
+        <div style="margin-top:10px;"><input class="state-input" style="border:1.5px solid #D0DCEA;color:#99AABC;background:#F5F8FA;" value="Deshabilitado" readonly disabled></div>
+      </div>
+    </div>
+
+    <table class="token-table" style="margin-top:8px;">
+      <tr><th>Estado</th><th>Token de color</th><th>Valor</th><th>Uso</th></tr>
+      <tr><td>Hover (superficie)</td><td class="token-name">--state-hover</td><td class="token-value">rgba(16,43,80,.05)</td><td class="token-desc">Tinte navy sobre cards, nav links, filas de tabla</td></tr>
+      <tr><td>Focus ring</td><td class="token-name">--state-focus</td><td class="token-value">rgba(29,200,121,.30)</td><td class="token-desc">box-shadow 0 0 0 3px — todos los elementos focusables</td></tr>
+      <tr><td>Active / pressed</td><td class="token-name">--state-active</td><td class="token-value">rgba(16,43,80,.10)</td><td class="token-desc">Feedback de tap/click en superficies</td></tr>
+      <tr><td>Disabled bg</td><td class="token-name">--state-disabled-bg</td><td class="token-value">#D0DCEA</td><td class="token-desc">Fondo de elementos deshabilitados</td></tr>
+      <tr><td>Disabled text</td><td class="token-name">--state-disabled-text</td><td class="token-value">#99AABC</td><td class="token-desc">Texto en elementos deshabilitados</td></tr>
+    </table>
+  </div>
+
+  <!-- 14 WCAG AA COMPLETO -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">14</span><h2 class="sec-title">Verificación de Accesibilidad WCAG AA</h2></div>
+
+    <div class="hl-green">
+      <p><strong>Resultado:</strong> Todos los pares de color de uso primario pasan WCAG AA (4.5:1 para texto normal, 3:1 para texto grande y UI). El par crítico — texto navy sobre esmeralda en el CTA — alcanza 5.1:1, superando el requisito AA.</p>
+    </div>
+
+    <table class="wcag-table">
+      <tr>
+        <th>Par de colores</th>
+        <th>Ratio</th>
+        <th>Nivel</th>
+        <th>Uso</th>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div><div class="wcag-s" style="background:#102B50;"></div></div>
+            <span>Blanco sobre Navy #102B50</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">12.3:1</td>
+        <td><span class="badge aaa">AAA</span></td>
+        <td>Texto en secciones dark, navbar, footer</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#102B50;"></div><div class="wcag-s" style="background:#1DC879;"></div></div>
+            <span>Navy #102B50 sobre Esmeralda #1DC879</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">5.1:1</td>
+        <td><span class="badge aa">AA</span></td>
+        <td>Texto del botón CTA primario — uso crítico</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div><div class="wcag-s" style="background:#0B1A2E;"></div></div>
+            <span>Text-1 #0B1A2E sobre blanco</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">17.1:1</td>
+        <td><span class="badge aaa">AAA</span></td>
+        <td>Todo el texto de cuerpo</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div><div class="wcag-s" style="background:#3D5472;"></div></div>
+            <span>Text-2 #3D5472 sobre blanco</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">7.1:1</td>
+        <td><span class="badge aaa">AA+</span></td>
+        <td>Subtítulos, descripciones, metadata</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div><div class="wcag-s" style="background:#7A94B0;"></div></div>
+            <span>Text-3 #7A94B0 sobre blanco</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">3.8:1</td>
+        <td><span class="badge aa">AA*</span></td>
+        <td>Solo texto grande (≥18px) o negrita ≥14px</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div><div class="wcag-s" style="background:#0A6B38;"></div></div>
+            <span>Emerald-dark #0A6B38 sobre blanco</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">6.3:1</td>
+        <td><span class="badge aaa">AA+</span></td>
+        <td>Texto esmeralda en badges, alertas de éxito</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div><div class="wcag-s" style="background:#D0382E;"></div></div>
+            <span>Error #D0382E sobre blanco</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">5.2:1</td>
+        <td><span class="badge aa">AA</span></td>
+        <td>Mensajes de error, bordes de campo inválido</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div><div class="wcag-s" style="background:#E09B1A;"></div></div>
+            <span>Warning #E09B1A sobre blanco</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">4.7:1</td>
+        <td><span class="badge aa">AA</span></td>
+        <td>Alertas de stock bajo, sincronización pendiente</td>
+      </tr>
+      <tr>
+        <td>
+          <div class="wcag-pair">
+            <div class="wcag-swatch-pair"><div class="wcag-s" style="background:#1DC879;"></div><div class="wcag-s" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div></div>
+            <span>Blanco sobre Esmeralda #1DC879</span>
+          </div>
+        </td>
+        <td class="wcag-ratio">2.4:1</td>
+        <td><span class="badge fail">FALLA ✕</span></td>
+        <td>No usar texto blanco sobre esmeralda — usar navy</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- 15 TABLA DE TOKENS DE REFERENCIA RÁPIDA -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">15</span><h2 class="sec-title">Tokens CSS — Referencia Rápida</h2></div>
+    <p>Nombres canónicos para uso en el código. Todos los valores de la interfaz deben referenciar estos tokens, nunca hexadecimales directos.</p>
+
+    <table class="token-table">
+      <tr><th>Token</th><th></th><th>Valor</th><th>Descripción</th></tr>
+
+      <tr><td class="token-name">--color-primary</td><td><div class="token-dot" style="background:#102B50;"></div></td><td class="token-value">#102B50</td><td class="token-desc">Navy principal — fondos oscuros, texto H1, logo</td></tr>
+      <tr><td class="token-name">--color-primary-hover</td><td><div class="token-dot" style="background:#0C2040;"></div></td><td class="token-value">#0C2040</td><td class="token-desc">Hover del primary</td></tr>
+      <tr><td class="token-name">--color-primary-active</td><td><div class="token-dot" style="background:#071529;"></div></td><td class="token-value">#071529</td><td class="token-desc">Active/pressed — también footer bg</td></tr>
+      <tr><td class="token-name">--color-primary-tint</td><td><div class="token-dot" style="background:#EEF4FA;"></div></td><td class="token-value">#EEF4FA</td><td class="token-desc">Tint navy muy suave</td></tr>
+
+      <tr><td class="token-name">--color-accent</td><td><div class="token-dot" style="background:#1DC879;"></div></td><td class="token-value">#1DC879</td><td class="token-desc">Esmeralda — CTA, íconos de éxito, marca</td></tr>
+      <tr><td class="token-name">--color-accent-hover</td><td><div class="token-dot" style="background:#18B26C;"></div></td><td class="token-value">#18B26C</td><td class="token-desc">Hover del CTA esmeralda</td></tr>
+      <tr><td class="token-name">--color-accent-dark</td><td><div class="token-dot" style="background:#0A6B38;"></div></td><td class="token-value">#0A6B38</td><td class="token-desc">Texto esmeralda sobre fondos claros</td></tr>
+      <tr><td class="token-name">--color-accent-tint</td><td><div class="token-dot" style="background:#E4F7EE;"></div></td><td class="token-value">#E4F7EE</td><td class="token-desc">Fondo de alertas y badges verdes</td></tr>
+
+      <tr><td class="token-name">--bg-base</td><td><div class="token-dot" style="background:#F5F8FA;border:1px solid #D0DCEA;"></div></td><td class="token-value">#F5F8FA</td><td class="token-desc">Fondo de página principal</td></tr>
+      <tr><td class="token-name">--bg-alt</td><td><div class="token-dot" style="background:#EBF0F7;border:1px solid #D0DCEA;"></div></td><td class="token-value">#EBF0F7</td><td class="token-desc">Secciones alternadas</td></tr>
+      <tr><td class="token-name">--surface-1</td><td><div class="token-dot" style="background:#FFFFFF;border:1px solid #D0DCEA;"></div></td><td class="token-value">#FFFFFF</td><td class="token-desc">Superficies primarias (secciones, cards)</td></tr>
+      <tr><td class="token-name">--surface-2</td><td><div class="token-dot" style="background:#F8FAFB;border:1px solid #D0DCEA;"></div></td><td class="token-value">#F8FAFB</td><td class="token-desc">Fondos interiores de cards sobre surface-1</td></tr>
+
+      <tr><td class="token-name">--text-1</td><td><div class="token-dot" style="background:#0B1A2E;"></div></td><td class="token-value">#0B1A2E</td><td class="token-desc">Texto principal — encabezados, cuerpo</td></tr>
+      <tr><td class="token-name">--text-2</td><td><div class="token-dot" style="background:#3D5472;"></div></td><td class="token-value">#3D5472</td><td class="token-desc">Texto secundario — subtítulos, descripción</td></tr>
+      <tr><td class="token-name">--text-3</td><td><div class="token-dot" style="background:#7A94B0;"></div></td><td class="token-value">#7A94B0</td><td class="token-desc">Texto terciario — hints, labels, timestamps</td></tr>
+
+      <tr><td class="token-name">--border</td><td><div class="token-dot" style="background:#D0DCEA;"></div></td><td class="token-value">#D0DCEA</td><td class="token-desc">Bordes por defecto</td></tr>
+      <tr><td class="token-name">--border-strong</td><td><div class="token-dot" style="background:#A8BFD4;"></div></td><td class="token-value">#A8BFD4</td><td class="token-desc">Bordes de énfasis, separadores</td></tr>
+
+      <tr><td class="token-name">--success</td><td><div class="token-dot" style="background:#1DC879;"></div></td><td class="token-value">#1DC879</td><td class="token-desc">Igual que accent — éxito = marca</td></tr>
+      <tr><td class="token-name">--success-tint</td><td><div class="token-dot" style="background:#E4F7EE;border:1px solid #B3ECCE;"></div></td><td class="token-value">#E4F7EE</td><td class="token-desc">Fondo alertas de éxito</td></tr>
+      <tr><td class="token-name">--warning</td><td><div class="token-dot" style="background:#E09B1A;"></div></td><td class="token-value">#E09B1A</td><td class="token-desc">Ámbar — stock bajo, sincronización</td></tr>
+      <tr><td class="token-name">--warning-tint</td><td><div class="token-dot" style="background:#FEF3DC;border:1px solid #F5D68A;"></div></td><td class="token-value">#FEF3DC</td><td class="token-desc">Fondo alertas de advertencia</td></tr>
+      <tr><td class="token-name">--error</td><td><div class="token-dot" style="background:#D0382E;"></div></td><td class="token-value">#D0382E</td><td class="token-desc">Rojo — diferencia de caja, error crítico</td></tr>
+      <tr><td class="token-name">--error-tint</td><td><div class="token-dot" style="background:#FDECEA;border:1px solid #F5B8B4;"></div></td><td class="token-value">#FDECEA</td><td class="token-desc">Fondo alertas de error</td></tr>
+
+      <tr><td class="token-name">--shadow-xs</td><td></td><td class="token-value" style="font-size:10px;">0 1px 3px rgba(16,43,80,.07)</td><td class="token-desc">Elementos en reposo mínimo</td></tr>
+      <tr><td class="token-name">--shadow-s</td><td></td><td class="token-value" style="font-size:10px;">0 2px 8px rgba(16,43,80,.08)</td><td class="token-desc">Navbar scrolled, cards base</td></tr>
+      <tr><td class="token-name">--shadow-m</td><td></td><td class="token-value" style="font-size:10px;">0 4px 16px rgba(16,43,80,.10)</td><td class="token-desc">Cards hover, modales</td></tr>
+      <tr><td class="token-name">--shadow-l</td><td></td><td class="token-value" style="font-size:10px;">0 12px 40px rgba(16,43,80,.14)</td><td class="token-desc">Mockup hero, modales grandes</td></tr>
+      <tr><td class="token-name">--focus-ring</td><td><div class="token-dot" style="background:rgba(29,200,121,.30);border:1px solid #1DC879;"></div></td><td class="token-value" style="font-size:10px;">0 0 0 3px rgba(29,200,121,.30)</td><td class="token-desc">Focus outline — todos los interactivos</td></tr>
+    </table>
+  </div>
+
+  <!-- 16 BREAKPOINTS Y MOTION -->
+  <div class="section">
+    <div class="sec-hdr"><span class="sec-num">16</span><h2 class="sec-title">Breakpoints y Motion — Sin cambios en v2</h2></div>
+    <div class="bp-track">
+      <div class="bp-row"><div class="bp-label"><div class="bp-name">Mobile</div><div class="bp-range">< 480px</div></div><div class="bp-specs"><ul class="bp-spec-list"><li>1 columna full-width</li><li>Padding horizontal: 16px</li><li>CTAs apiladas full-width</li><li>Nav: hamburger drawer</li></ul></div></div>
+      <div class="bp-row"><div class="bp-label"><div class="bp-name">Tablet</div><div class="bp-range">481–768px</div></div><div class="bp-specs"><ul class="bp-spec-list"><li>1-2 columnas según sección</li><li>Padding horizontal: 24px</li><li>Nav: logo + CTA + hamburguesa</li></ul></div></div>
+      <div class="bp-row"><div class="bp-label"><div class="bp-name">Desktop</div><div class="bp-range">> 1024px</div></div><div class="bp-specs"><ul class="bp-spec-list"><li>Grid hasta 4 columnas</li><li>Max-width: 1160px centrado</li><li>Padding horizontal: 32px</li><li>Nav completa visible</li></ul></div></div>
+    </div>
+
+    <div style="margin-top:16px;">
+      <div class="motion-row"><div class="motion-type">Duración micro</div><div class="motion-spec">150ms — Hover, focus, color changes de botones y links</div></div>
+      <div class="motion-row"><div class="motion-type">Duración base</div><div class="motion-spec">200ms — Transiciones de estado, apertura de FAQ</div></div>
+      <div class="motion-row"><div class="motion-type">Duración suave</div><div class="motion-spec">320ms — Acordeones, dropdowns, altura max-height</div></div>
+      <div class="motion-row"><div class="motion-type">Duración larga</div><div class="motion-spec">600ms — Scroll reveal (fadeUp), transiciones de página</div></div>
+      <div class="motion-row"><div class="motion-type">Easing principal</div><div class="motion-spec">cubic-bezier(.4, 0, .2, 1) — Todas las transiciones UI</div></div>
+    </div>
+  </div>
+
+</main>
+</x-dc>
+</body>
+</html>

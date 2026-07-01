@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #F2F1EE; font-family: 'IBM Plex Sans', sans-serif; color: #1A1A1A; }
+    .doc { max-width: 8.5in; margin: 0 auto; background: #FAFAF8; padding: 64px clamp(24px, 5vw, 0.85in) 96px; }
+    .doc-frame { width: 100%; border-collapse: collapse; }
+    .doc-frame td { padding: 0; }
+    .hdr-space, .ftr-space { display: none; }
+
+    .cover { border-bottom: 3px solid #1A1A1A; padding-bottom: 40px; margin-bottom: 56px; }
+    .cover-label { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin: 0 0 20px 0; }
+    .cover h1 { font-size: 40px; font-weight: 700; line-height: 1.1; margin: 0 0 8px 0; letter-spacing: -0.02em; }
+    .cover-sub { font-size: 17px; font-weight: 300; color: #555; margin: 0 0 28px 0; }
+    .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #999; }
+    .meta-value { font-size: 13px; font-weight: 500; color: #333; }
+
+    .section { margin-bottom: 52px; }
+    .section-header { display: flex; align-items: baseline; gap: 14px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1.5px solid #E0DED8; }
+    .section-num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; color: #B0AEA8; min-width: 28px; }
+    .section-title { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #555; margin: 0; }
+
+    p { font-size: 14.5px; line-height: 1.7; margin: 0 0 14px 0; color: #2A2A2A; text-wrap: pretty; }
+    p:last-child { margin-bottom: 0; }
+    ul, ol { margin: 0 0 14px 0; padding-left: 20px; }
+    li { font-size: 14.5px; line-height: 1.65; color: #2A2A2A; margin-bottom: 5px; }
+    li strong { font-weight: 600; color: #1A1A1A; }
+
+    /* Highlight block */
+    .highlight { background: #1A1A1A; color: #F5F4F1; padding: 24px 28px; border-radius: 4px; margin: 0 0 14px 0; }
+    .highlight p { color: #F5F4F1; font-size: 15px; font-weight: 500; line-height: 1.55; margin: 0; }
+
+    /* Visitor types */
+    .visitor-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; margin-bottom: 14px; }
+    .visitor-card { padding: 18px 20px; border-radius: 3px; }
+    .visitor-card.cold { background: #EAF0F5; }
+    .visitor-card.warm { background: #F5F0E8; }
+    .visitor-card.hot { background: #EAF5EA; }
+    .visitor-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+    .visitor-card.cold .visitor-badge { color: #4A7090; }
+    .visitor-card.warm .visitor-badge { color: #8A6030; }
+    .visitor-card.hot .visitor-badge { color: #2A6A2A; }
+    .visitor-pct { font-size: 28px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
+    .visitor-desc { font-size: 13px; line-height: 1.55; color: #444; }
+
+    /* Psychological flow */
+    .flow-track { position: relative; padding-left: 32px; }
+    .flow-track::before { content: ''; position: absolute; left: 10px; top: 8px; bottom: 8px; width: 2px; background: #E0DED8; }
+    .flow-step { position: relative; margin-bottom: 16px; }
+    .flow-step:last-child { margin-bottom: 0; }
+    .flow-dot { position: absolute; left: -26px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: #1A1A1A; }
+    .flow-step-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #BBB; margin-bottom: 2px; }
+    .flow-step-state { font-size: 14px; font-weight: 700; color: #1A1A1A; margin-bottom: 2px; }
+    .flow-step-trigger { font-size: 13px; font-style: italic; color: #666; margin-bottom: 4px; }
+    .flow-step-section { font-size: 12px; color: #AAA; }
+    .flow-step-section span { background: #ECEAE5; padding: 2px 8px; border-radius: 2px; font-weight: 500; color: #555; }
+
+    /* Objection response */
+    .obj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .obj-item { background: #F0EDE8; padding: 16px 18px; }
+    .obj-q { font-size: 13px; font-weight: 700; color: #1A1A1A; margin-bottom: 6px; }
+    .obj-strategy { font-size: 12.5px; line-height: 1.55; color: #444; margin-bottom: 4px; }
+    .obj-where { font-size: 11px; color: #AAA; }
+    .obj-where span { background: #E2DED8; padding: 1px 7px; border-radius: 2px; font-weight: 600; color: #666; }
+
+    /* Section blueprint cards */
+    .blueprint-card { border: 1.5px solid #E0DED8; border-radius: 4px; margin-bottom: 16px; overflow: hidden; break-inside: avoid; }
+    .blueprint-card-header { background: #1A1A1A; padding: 12px 20px; display: flex; align-items: center; gap: 14px; }
+    .bc-order { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: #888; min-width: 28px; }
+    .bc-name { font-size: 14px; font-weight: 700; color: #F5F4F1; flex: 1; }
+    .bc-priority { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; border-radius: 100px; }
+    .bc-priority.critica { background: #B04040; color: #fff; }
+    .bc-priority.alta { background: #4A6A9A; color: #fff; }
+    .bc-priority.media { background: #6A6A6A; color: #fff; }
+    .bc-priority.baja { background: #A0A0A0; color: #fff; }
+    .blueprint-card-body { padding: 18px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px; }
+    .bc-field-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA; margin-bottom: 4px; }
+    .bc-field-value { font-size: 13px; line-height: 1.55; color: #2A2A2A; }
+    .bc-field.full { grid-column: 1 / -1; }
+    .bc-cta-tag { display: inline-block; background: #1A1A1A; color: #F5F4F1; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 100px; }
+    .bc-emotion-tag { display: inline-block; background: #F0EDE8; color: #444; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 100px; }
+
+    /* Priority table */
+    .priority-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    .priority-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA; padding: 8px 12px; border-bottom: 1.5px solid #E0DED8; }
+    .priority-table td { padding: 10px 12px; border-bottom: 1px solid #ECEAE5; vertical-align: middle; }
+    .priority-table tr:last-child td { border-bottom: none; }
+    .priority-table tr:hover td { background: #F5F3F0; }
+    .impact-bar { display: flex; gap: 3px; }
+    .impact-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .impact-dot.filled { background: #1A1A1A; }
+    .impact-dot.empty { background: #DDD; }
+    .prio-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 2px; }
+    .prio-badge.critica { background: #FDEAEA; color: #B04040; }
+    .prio-badge.alta { background: #EAF0FA; color: #3A5A8A; }
+    .prio-badge.media { background: #F0EDE8; color: #666; }
+    .prio-badge.baja { background: #EEECEA; color: #888; }
+
+    /* Improvement items */
+    .improvement-item { display: flex; gap: 16px; padding: 16px 0; border-bottom: 1px solid #ECEAE5; break-inside: avoid; }
+    .improvement-item:last-child { border-bottom: none; }
+    .imp-num { font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 500; color: #D8D4CE; min-width: 36px; }
+    .imp-content { flex: 1; }
+    .imp-title { font-size: 14.5px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
+    .imp-why { font-size: 13px; line-height: 1.6; color: #555; margin-bottom: 6px; }
+    .imp-how { font-size: 12.5px; line-height: 1.55; color: #888; font-style: italic; }
+
+    /* Emotion journey */
+    .emotion-journey { display: flex; align-items: flex-start; gap: 0; overflow-x: auto; padding-bottom: 4px; }
+    .ej-step { flex: 1; min-width: 90px; text-align: center; position: relative; }
+    .ej-step::after { content: '→'; position: absolute; right: -8px; top: 18px; font-size: 14px; color: #CCC; }
+    .ej-step:last-child::after { display: none; }
+    .ej-dot { width: 40px; height: 40px; border-radius: 50%; background: #1A1A1A; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; }
+    .ej-dot span { font-size: 18px; }
+    .ej-state { font-size: 12px; font-weight: 700; color: #1A1A1A; margin-bottom: 2px; line-height: 1.2; }
+    .ej-trigger { font-size: 11px; color: #888; line-height: 1.4; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      html, body { margin: 0; padding: 0; background: #FAFAF8; }
+      .doc { max-width: none !important; margin: 0 !important; padding: 0 0.75in !important; }
+      .hdr-space, .ftr-space { display: table-cell; height: 0.65in; }
+      h1, h2, h3 { break-after: avoid; }
+      .section { break-inside: avoid-page; }
+      .blueprint-card { break-inside: avoid; }
+    }
+  </style>
+</helmet>
+
+<main class="doc">
+  <table class="doc-frame" role="presentation">
+    <thead><tr><td class="hdr-space"></td></tr></thead>
+    <tbody><tr><td>
+
+      <!-- COVER -->
+      <div class="cover">
+        <p class="cover-label">Documento Estratégico — Fase 2</p>
+        <h1>Landing Page UX Blueprint</h1>
+        <p class="cover-sub">MypiCuadre — Arquitectura estratégica de conversión</p>
+        <div class="cover-meta">
+          <div class="meta-item"><span class="meta-label">Producto</span><span class="meta-value">MypiCuadre</span></div>
+          <div class="meta-item"><span class="meta-label">Basado en</span><span class="meta-value">Product &amp; Brand Brief v1.0</span></div>
+          <div class="meta-item"><span class="meta-label">Rol</span><span class="meta-value">UX Lead · CRO Specialist · Product Designer Sr.</span></div>
+          <div class="meta-item"><span class="meta-label">Versión</span><span class="meta-value">1.0 — Junio 2026</span></div>
+        </div>
+      </div>
+
+      <!-- 01 OBJETIVO PRINCIPAL -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-title">Objetivo Principal de la Landing</h2>
+        </div>
+        <div class="highlight">
+          <p>Lograr que el dueño de un pequeño negocio cubano instale la PWA y active su licencia Demo en el mismo dispositivo desde el que visitó la landing, sin necesidad de seguimiento posterior.</p>
+        </div>
+        <p>Este objetivo es intencionalmente estrecho. No es "generar leads", no es "educar al mercado", no es "construir marca". Es una conversión directa, medible y de fricción mínima. Toda la arquitectura de la landing debe subordinarse a este único resultado.</p>
+        <p>La razón de priorizar la demo sobre la compra directa es que el visitante mayoritariamente llega frío o tibio. La instalación de la demo elimina la barrera económica y permite que el producto se venda a sí mismo durante el período de prueba.</p>
+      </div>
+
+      <!-- 02 OBJETIVOS SECUNDARIOS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-title">Objetivos Secundarios</h2>
+        </div>
+        <ol>
+          <li><strong>Contacto por WhatsApp:</strong> capturar prospectos que tienen interés pero tienen dudas específicas que la landing no resuelve. Estos son leads de alta intención que se pueden cerrar en una conversación directa.</li>
+          <li><strong>Compra directa de licencia:</strong> para visitantes calientes que llegan por recomendación y ya están convencidos. No debe ser el foco del diseño, pero debe estar presente y accesible.</li>
+          <li><strong>Compartir con otro dueño:</strong> activación del canal de referidos. En el mercado cubano, el boca a boca es el canal de mayor credibilidad. La landing debe hacer que sea fácil compartirla.</li>
+          <li><strong>Ver una demostración:</strong> para visitantes que necesitan evidencia visual antes de instalar. Un video o demo embebida reduce la fricción de decisión significativamente.</li>
+        </ol>
+      </div>
+
+      <!-- 03 TIPO DE VISITANTE -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-title">Tipo de Visitante Esperado</h2>
+        </div>
+        <div class="visitor-grid">
+          <div class="visitor-card cold">
+            <div class="visitor-badge">Frío</div>
+            <div class="visitor-pct">~55%</div>
+            <div class="visitor-desc">Llegó por anuncio, búsqueda o post en redes. No sabe qué es MypiCuadre. Sabe que tiene un problema pero no sabe que este producto existe.</div>
+          </div>
+          <div class="visitor-card warm">
+            <div class="visitor-badge">Tibio</div>
+            <div class="visitor-pct">~35%</div>
+            <div class="visitor-desc">Llegó por recomendación de otro dueño de negocio o ya vio algo antes. Tiene una referencia del producto. Necesita confirmar que es para él.</div>
+          </div>
+          <div class="visitor-card hot">
+            <div class="visitor-badge">Caliente</div>
+            <div class="visitor-pct">~10%</div>
+            <div class="visitor-desc">Ya lo conoce, viene a instalarlo o confirmar el precio. Necesita el CTA de forma inmediata. La landing no debe ponerle obstáculos.</div>
+          </div>
+        </div>
+        <p><strong>Perfil dominante del visitante:</strong> hombre o mujer de 30–55 años, dueño de bodega, cafetería o tienda en Cuba, usando un smartphone Android, con conectividad intermitente, que llega a la landing desde WhatsApp o Facebook. No tiene experiencia previa con software de gestión. Su umbral de atención es bajo — si en 5 segundos no entiende para qué sirve, abandona.</p>
+      </div>
+
+      <!-- 04 NIVEL DE CONOCIMIENTO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-title">Nivel de Conocimiento del Producto</h2>
+        </div>
+        <p><strong>Diagnóstico general: Frío a Tibio.</strong> La mayoría de los visitantes no conocen el concepto de "POS" o "sistema de punto de venta". Sin embargo, conocen perfectamente sus problemas: la caja que no cuadra, el cambio en USD que se calcula mal, el vendedor del que desconfían.</p>
+        <p>Esto tiene una implicación arquitectónica crítica: <strong>la landing no debe hablar del producto primero, debe hablar del problema primero.</strong> El copy y la estructura deben nombrar la frustración antes de presentar la solución. Solo cuando el visitante siente que lo entienden, está dispuesto a escuchar lo que ofreces.</p>
+        <ul>
+          <li>No saben qué es una PWA → no usar el término.</li>
+          <li>No saben qué es "offline-first" → traducirlo a "funciona sin internet".</li>
+          <li>No saben qué es "auditoría inmutable" → traducirlo a "nada se puede borrar".</li>
+          <li>Sí saben qué es un turno, una caja, un cuadre, un vendedor → usar ese vocabulario.</li>
+        </ul>
+      </div>
+
+      <!-- 05-06 OBJECIONES Y RESPUESTAS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">05–06</span>
+          <h2 class="section-title">Objeciones del Visitante y Estrategia de Respuesta</h2>
+        </div>
+        <div class="obj-grid">
+          <div class="obj-item">
+            <div class="obj-q">"¿De verdad funciona sin internet?"</div>
+            <div class="obj-strategy">Es la objeción más frecuente y más importante. No basta con afirmarlo — hay que demostrarlo visualmente (indicador offline en la app, captura sin señal) y con una explicación mecanística simple: "los datos se guardan en tu teléfono".</div>
+            <div class="obj-where">Responder en: <span>Sección Solución</span> <span>FAQ</span></div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-q">"Mis vendedores no saben de tecnología"</div>
+            <div class="obj-strategy">Mostrar la interfaz del vendedor — su simplicidad extrema es la respuesta. Una captura de la pantalla del vendedor (buscar, cobrar, cerrar) es más convincente que cualquier texto.</div>
+            <div class="obj-where">Responder en: <span>Cómo funciona</span> <span>FAQ</span></div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-q">"¿Qué pasa si se me rompe el teléfono?"</div>
+            <div class="obj-strategy">Presentar la sync en la nube como solución, pero sin hacerla obligatoria. El riesgo percibido se neutraliza con "activa la copia de seguridad y tus datos están protegidos".</div>
+            <div class="obj-where">Responder en: <span>FAQ</span></div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-q">"¿Para qué, si tengo un cuaderno?"</div>
+            <div class="obj-strategy">No atacar el cuaderno directamente. Señalar lo que el cuaderno no puede hacer: calcular el cambio exacto, detectar diferencias de caja automáticamente, registrar quién hizo cada cosa.</div>
+            <div class="obj-where">Responder en: <span>Diferenciadores</span> <span>FAQ</span></div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-q">"¿Y si la empresa cierra?"</div>
+            <div class="obj-strategy">Este es un miedo real en el contexto cubano. Responder directamente: la licencia funciona localmente, sin servidor, aunque el proveedor desaparezca. Esto es un diferenciador competitivo que hay que nombrar sin rodeos.</div>
+            <div class="obj-where">Responder en: <span>Diferenciadores</span> <span>FAQ</span></div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-q">"¿Cuánto cuesta?"</div>
+            <div class="obj-strategy">Deferirla estratégicamente hasta que el visitante ya vio el valor. Cuando se presenta el precio, enfatizar primero la demo gratuita y después que no hay costo de servidor. La licencia perpetua es el argumento de cierre para quien piensa en el largo plazo.</div>
+            <div class="obj-where">Responder en: <span>Precios</span></div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-q">"¿Es complicado de configurar?"</div>
+            <div class="obj-strategy">La sección "Cómo funciona" debe mostrar el proceso en 3 pasos máximo. El tiempo estimado (15 minutos) es un argumento poderoso si se comunica explícitamente.</div>
+            <div class="obj-where">Responder en: <span>Cómo funciona</span> <span>FAQ</span></div>
+          </div>
+          <div class="obj-item">
+            <div class="obj-q">"¿Funciona en iPhone?"</div>
+            <div class="obj-strategy">Honestidad directa: funciona con limitaciones. La recomendación es Android. No minimizar ni esconder — la deshonestidad aquí destruye la confianza que costó toda la landing construir.</div>
+            <div class="obj-where">Responder en: <span>FAQ</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 07 EMOCIONES POR ETAPA -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">07</span>
+          <h2 class="section-title">Emociones por Etapa del Recorrido</h2>
+        </div>
+        <div class="emotion-journey">
+          <div class="ej-step">
+            <div class="ej-dot"><span>😤</span></div>
+            <div class="ej-state">Frustración latente</div>
+            <div class="ej-trigger">Antes de llegar — ya existe el problema</div>
+          </div>
+          <div class="ej-step">
+            <div class="ej-dot"><span>🎯</span></div>
+            <div class="ej-state">Reconocimiento</div>
+            <div class="ej-trigger">"Esto habla de mi situación"</div>
+          </div>
+          <div class="ej-step">
+            <div class="ej-dot"><span>💡</span></div>
+            <div class="ej-state">Curiosidad</div>
+            <div class="ej-trigger">"¿Y cómo lo resuelve?"</div>
+          </div>
+          <div class="ej-step">
+            <div class="ej-dot"><span>🔍</span></div>
+            <div class="ej-state">Evaluación</div>
+            <div class="ej-trigger">"¿Será de fiar?"</div>
+          </div>
+          <div class="ej-step">
+            <div class="ej-dot"><span>✅</span></div>
+            <div class="ej-state">Confianza</div>
+            <div class="ej-trigger">"Otros lo usan, funciona"</div>
+          </div>
+          <div class="ej-step">
+            <div class="ej-dot"><span>💰</span></div>
+            <div class="ej-state">Cálculo</div>
+            <div class="ej-trigger">"¿Cuánto cuesta? ¿Vale?"</div>
+          </div>
+          <div class="ej-step">
+            <div class="ej-dot"><span>🚀</span></div>
+            <div class="ej-state">Decisión</div>
+            <div class="ej-trigger">"Es gratis probarlo, ¿qué pierdo?"</div>
+          </div>
+        </div>
+        <p style="margin-top:20px;">El recorrido emocional completo dura entre 3 y 8 minutos en la landing. La clave arquitectónica es no pedir la acción antes de que el visitante haya completado las etapas de Reconocimiento y Confianza. Un CTA demasiado temprano activa la resistencia; uno demasiado tardío pierde el momento de decisión.</p>
+      </div>
+
+      <!-- 08 FLUJO PSICOLÓGICO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">08</span>
+          <h2 class="section-title">Flujo Psicológico Completo del Usuario</h2>
+        </div>
+        <div class="flow-track">
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 1</div>
+            <div class="flow-step-state">Atención capturada</div>
+            <div class="flow-step-trigger">"¿Esto es para mí? ¿Hablan de mi tipo de negocio?"</div>
+            <div class="flow-step-section">Activado por: <span>Hero</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 2</div>
+            <div class="flow-step-state">Dolor reconocido</div>
+            <div class="flow-step-trigger">"Sí, me pasa exactamente eso. Todos los días. Me conocen."</div>
+            <div class="flow-step-section">Activado por: <span>Problema</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 3</div>
+            <div class="flow-step-state">Esperanza activada</div>
+            <div class="flow-step-trigger">"Hay algo que resuelve esto. Quiero ver cómo."</div>
+            <div class="flow-step-section">Activado por: <span>Solución</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 4</div>
+            <div class="flow-step-state">Comprensión operativa</div>
+            <div class="flow-step-trigger">"Entiendo cómo funciona. Parece sencillo. Creo que yo puedo hacerlo."</div>
+            <div class="flow-step-section">Activado por: <span>Cómo funciona</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 5</div>
+            <div class="flow-step-state">Cobertura confirmada</div>
+            <div class="flow-step-trigger">"Hace lo que necesito. Cubre mis casos de uso específicos."</div>
+            <div class="flow-step-section">Activado por: <span>Funciones clave</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 6</div>
+            <div class="flow-step-state">Validación social</div>
+            <div class="flow-step-trigger">"Hay negocios reales como el mío que ya lo usan. No soy el primero en arriesgarme."</div>
+            <div class="flow-step-section">Activado por: <span>Testimonios</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 7</div>
+            <div class="flow-step-state">Convicción diferencial</div>
+            <div class="flow-step-trigger">"Esto no es como lo que ya conozco. Hay razones concretas para elegirlo."</div>
+            <div class="flow-step-section">Activado por: <span>Por qué MypiCuadre</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 8</div>
+            <div class="flow-step-state">Evaluación económica</div>
+            <div class="flow-step-trigger">"El precio es razonable. Hay demo gratuita. No pierdo nada probándolo."</div>
+            <div class="flow-step-section">Activado por: <span>Precios</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 9</div>
+            <div class="flow-step-state">Objeciones resueltas</div>
+            <div class="flow-step-trigger">"Tenía una duda sobre X. Aquí la responden directamente. Ya no tengo excusas."</div>
+            <div class="flow-step-section">Activado por: <span>FAQ</span></div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot"></div>
+            <div class="flow-step-num">ESTADO 10</div>
+            <div class="flow-step-state">Decisión de bajo riesgo</div>
+            <div class="flow-step-trigger">"Es gratis probarlo. Lo instalo ahora mismo." → CONVERSIÓN</div>
+            <div class="flow-step-section">Activado por: <span>CTA Final</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 09 SECCIONES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">09</span>
+          <h2 class="section-title">Orden Ideal de Secciones — Análisis Detallado</h2>
+        </div>
+
+        <!-- S1 HERO -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S1</span>
+            <span class="bc-name">HERO — Captura inmediata de atención</span>
+            <span class="bc-priority critica">Crítica</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Comunicar la UVP completa en menos de 5 segundos. El visitante debe entender QUÉ es, PARA QUIÉN es y POR QUÉ importa antes de hacer scroll.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Esto es para mí y qué hace?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Reconocimiento</span> <span class="bc-emotion-tag">Curiosidad</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Seguir leyendo — o convertir inmediatamente (visitante caliente).</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">Headline que nombra el beneficio principal (no el producto). Subheadline con la UVP en 1–2 líneas. CTA principal visible sin scroll. Elemento visual que muestra la app en contexto real (no mockup abstracto). Indicador opcional de credibilidad: "X negocios ya lo usan" o "sin internet".</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value"><span class="bc-cta-tag">Instalar demo gratis</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Nota crítica de diseño</div>
+              <div class="bc-field-value">El CTA debe estar visible sin scroll en el 80% de dispositivos Android. El visitante no debe buscar cómo actuar.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S2 PROBLEMA -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S2</span>
+            <span class="bc-name">PROBLEMA — Validación del dolor</span>
+            <span class="bc-priority alta">Alta</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Crear resonancia emocional profunda. El visitante debe sentir que la landing fue escrita para él específicamente, no para un público genérico.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Entienden lo que yo vivo todos los días?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Validación</span> <span class="bc-emotion-tag">Alivio de ser comprendido</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Continuar leyendo. Esta sección no convierte — prepara emocionalmente para la conversión.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">4–5 situaciones cotidianas formuladas como preguntas en primera persona: "¿Cobras en USD y calculas el cambio en tu cabeza?" / "¿Al cerrar el turno la caja no te cuadra y no sabes por qué?" / "¿No sabes qué pasó en tu negocio mientras no estabas?" — Sin soluciones aún. Solo el problema.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value">No hay CTA en esta sección. Interrumpirla con un botón rompe la resonancia emocional.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S3 SOLUCIÓN -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S3</span>
+            <span class="bc-name">SOLUCIÓN — Presentación del producto</span>
+            <span class="bc-priority alta">Alta</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Presentar MypiCuadre como la respuesta lógica y directa a los dolores nombrados en S2. La transición S2→S3 debe sentirse como un alivio natural.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Qué es esto y cómo resuelve exactamente mis problemas?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Esperanza</span> <span class="bc-emotion-tag">Alivio</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Querer saber más. Activar la curiosidad sobre las funciones específicas.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">Descripción del producto en lenguaje de beneficio (no de función). Énfasis en los 3 pilares: funciona sin internet, maneja MN y USD, tú tienes el control. Imagen o video corto que muestra el producto en un contexto real de negocio cubano.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value"><span class="bc-cta-tag">Ver cómo funciona ↓</span> (soft, ancla a S4)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S4 CÓMO FUNCIONA -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S4</span>
+            <span class="bc-name">CÓMO FUNCIONA — Reducción de complejidad percibida</span>
+            <span class="bc-priority alta">Alta</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Demoler la objeción "debe ser complicado". Si el visitante cree que no podrá usarlo, no convertirá aunque quiera el producto.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Seré capaz de instalarlo y usarlo? ¿Y mis vendedores?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Confianza</span> <span class="bc-emotion-tag">Autoeficacia</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">El visitante se imagina a sí mismo usando el producto exitosamente. Baja la barrera psicológica de instalación.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">3 pasos numerados: 1) Instalar desde el navegador, 2) Configurar el negocio en 15 minutos, 3) Abrir el primer turno. Capturas reales de la app en cada paso. Un detalle sobre la pantalla del vendedor — mostrar su simplicidad extrema como argumento.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value"><span class="bc-cta-tag">Empezar gratis</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S5 FUNCIONES -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S5</span>
+            <span class="bc-name">FUNCIONES CLAVE — Profundidad y cobertura</span>
+            <span class="bc-priority media">Media</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Confirmar que el producto cubre todos los casos de uso relevantes del visitante. Esta sección habla al visitante racional, no al emocional.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Hace todo lo que necesito? ¿Cubre mi caso específico?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Satisfacción</span> <span class="bc-emotion-tag">Completitud</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Confirmar que el producto encaja. Eliminar la duda "¿pero en mi negocio funciona?"</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">6 funciones con icono, título en beneficio (no en función técnica) y 1 línea de descripción. Prioridad: Cuadre automático, Cobro multimoneda, Inventario en tiempo real, Control de vendedores, Historial inmutable, Reportes y exportación. Ordenadas de mayor a menor impacto emocional.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value">No obligatorio. Puede incluirse un CTA discreto al final del bloque.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S6 TESTIMONIOS -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S6</span>
+            <span class="bc-name">TESTIMONIOS — Prueba social</span>
+            <span class="bc-priority alta">Alta</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Transferir credibilidad a través de pares. En el mercado cubano, la recomendación de alguien con un negocio similar pesa más que cualquier argumento racional.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Hay negocios como el mío que ya lo usan y les funciona?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Confianza</span> <span class="bc-emotion-tag">Reducción de riesgo</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Baja las últimas defensas racionales. El visitante deja de buscar razones para no comprar.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">2–3 testimonios reales con nombre, tipo de negocio y resultado específico obtenido (no frases genéricas de satisfacción). El tipo de negocio del testimonial debe coincidir con los del visitante. Si aún no hay testimonios reales, usar casos de uso narrativos concretos hasta conseguirlos.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value">No en esta sección — interrumpiría el flujo de credibilidad.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S7 DIFERENCIADORES -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S7</span>
+            <span class="bc-name">POR QUÉ MYPICUADRE — Diferenciadores</span>
+            <span class="bc-priority media">Media</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Separar MypiCuadre de las alternativas mentales del visitante: el cuaderno, una app genérica, "lo que ya tengo". Responder implícitamente "¿por qué esto y no otra cosa?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Por qué esto y no seguir con lo que ya tengo?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Convicción</span> <span class="bc-emotion-tag">Certeza</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Eliminar las alternativas mentales del visitante. Sentir que la decisión ya está tomada.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">Comparación implícita o tabla simple: MypiCuadre vs. cuaderno vs. otra app cloud. Énfasis en: funciona sin internet, licencia local (funciona si el proveedor cierra), datos propios, sin costo de servidor. Puede incluir el punto de honestidad: lo que no hace (sin iOS completo, sin facturación fiscal) — esto genera confianza, no desconfianza.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value"><span class="bc-cta-tag">Probar gratis ahora</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S8 PRECIOS -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S8</span>
+            <span class="bc-name">PRECIOS — Eliminación de barrera económica</span>
+            <span class="bc-priority critica">Crítica</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Presentar el precio como una inversión justificada y de bajo riesgo. La demo gratuita es el argumento principal — neutraliza la objeción económica por completo.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Cuánto cuesta? ¿Puedo pagarlo? ¿Vale la pena?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Alivio</span> <span class="bc-emotion-tag">Urgencia suave</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Seleccionar plan o activar demo. Para la mayoría: activar demo gratuita.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">Demo gratuita destacada visualmente como opción principal (no como footnote). Planes Mensual, Anual y Perpetua con diferencial claro. Nota explícita: "Sin costo de servidor. Sin técnico. Sin Play Store." El precio de la licencia perpetua funciona como ancla que hace parecer más razonables los planes mensuales.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value"><span class="bc-cta-tag">Activar demo gratuita</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S9 FAQ -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S9</span>
+            <span class="bc-name">FAQ — Resolución final de objeciones</span>
+            <span class="bc-priority alta">Alta</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Eliminar las últimas dudas específicas que le impiden convertir al visitante que ya está casi convencido. Es la última defensa antes del CTA final.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"Pero, ¿qué pasa si...?" (cada duda específica que la landing no resolvió explícitamente antes)</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Seguridad</span> <span class="bc-emotion-tag">Resolución</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Confirmar la decisión de convertir. El visitante queda sin excusas objetivas para no hacerlo.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">8–10 preguntas del brief, priorizadas por frecuencia esperada. Las 3 primeras deben ser: "¿Funciona de verdad sin internet?", "¿Qué pasa si se rompe el teléfono?" y "¿Qué pasa si la empresa cierra?". Respuestas directas, honestas, sin evasivas. La honestidad sobre limitaciones (iOS, facturación) debe aparecer aquí también.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value">No en la sección — el CTA final viene inmediatamente después.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S10 CTA FINAL -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S10</span>
+            <span class="bc-name">CTA FINAL — Cierre de conversión</span>
+            <span class="bc-priority critica">Crítica</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Convertir a quienes llegaron al final de la landing — visitantes de alta intención que necesitaban leer todo antes de decidir. Es la segunda oportunidad de conversión más importante.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"Ok, ¿cuál es el siguiente paso exactamente?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Determinación</span> <span class="bc-emotion-tag">Facilidad percibida</span></div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Acción que provoca</div>
+              <div class="bc-field-value">Instalación de la PWA o contacto directo por WhatsApp para los indecisos finales.</div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">Headline de remate que recuerda el beneficio principal. Recordatorio de la demo gratuita (sin riesgo). CTA principal prominente. CTA secundario de WhatsApp para quienes prefieren hablar antes. Máximo de fricción: dos clics.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value"><span class="bc-cta-tag">Instalar ahora gratis</span> &nbsp; <span class="bc-cta-tag" style="background:#F0EDE8;color:#1A1A1A;">Escribir por WhatsApp</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- S11 FOOTER -->
+        <div class="blueprint-card">
+          <div class="blueprint-card-header">
+            <span class="bc-order">S11</span>
+            <span class="bc-name">FOOTER — Credibilidad institucional</span>
+            <span class="bc-priority baja">Baja</span>
+          </div>
+          <div class="blueprint-card-body">
+            <div class="bc-field">
+              <div class="bc-field-label">Objetivo</div>
+              <div class="bc-field-value">Señales de legitimidad para quienes buscan validar que detrás hay una empresa real. Contacto de último recurso.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Pregunta que responde</div>
+              <div class="bc-field-value">"¿Cómo los contacto si necesito ayuda?"</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">Emoción que genera</div>
+              <div class="bc-field-value"><span class="bc-emotion-tag">Tranquilidad institucional</span></div>
+            </div>
+            <div class="bc-field full">
+              <div class="bc-field-label">Contenido que debe contener</div>
+              <div class="bc-field-value">Contacto (WhatsApp, correo). Aviso legal mínimo. Nota honesta sobre limitaciones del producto (sin iOS completo, sin facturación fiscal). Sin sobrecargar — menos es más aquí.</div>
+            </div>
+            <div class="bc-field">
+              <div class="bc-field-label">CTA</div>
+              <div class="bc-field-value">No aplica.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABLA DE PRIORIDADES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">—</span>
+          <h2 class="section-title">Tabla Resumen — Prioridad e Impacto</h2>
+        </div>
+        <table class="priority-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Sección</th>
+              <th>Prioridad</th>
+              <th>Impacto en conversión</th>
+              <th>Tiempo estimado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S1</td>
+              <td style="font-weight:600;">Hero</td>
+              <td><span class="prio-badge critica">Crítica</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div></div></td>
+              <td>5–10 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S2</td>
+              <td style="font-weight:600;">Problema</td>
+              <td><span class="prio-badge alta">Alta</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot empty"></div></div></td>
+              <td>20–35 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S3</td>
+              <td style="font-weight:600;">Solución</td>
+              <td><span class="prio-badge alta">Alta</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot empty"></div></div></td>
+              <td>20–30 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S4</td>
+              <td style="font-weight:600;">Cómo funciona</td>
+              <td><span class="prio-badge alta">Alta</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot empty"></div></div></td>
+              <td>40–60 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S5</td>
+              <td style="font-weight:600;">Funciones clave</td>
+              <td><span class="prio-badge media">Media</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot empty"></div><div class="impact-dot empty"></div></div></td>
+              <td>60–90 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S6</td>
+              <td style="font-weight:600;">Testimonios</td>
+              <td><span class="prio-badge alta">Alta</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div></div></td>
+              <td>30–45 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S7</td>
+              <td style="font-weight:600;">Por qué MypiCuadre</td>
+              <td><span class="prio-badge media">Media</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot empty"></div><div class="impact-dot empty"></div></div></td>
+              <td>30–45 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S8</td>
+              <td style="font-weight:600;">Precios</td>
+              <td><span class="prio-badge critica">Crítica</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div></div></td>
+              <td>30–45 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S9</td>
+              <td style="font-weight:600;">FAQ</td>
+              <td><span class="prio-badge alta">Alta</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot empty"></div></div></td>
+              <td>60–120 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S10</td>
+              <td style="font-weight:600;">CTA Final</td>
+              <td><span class="prio-badge critica">Crítica</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot filled"></div><div class="impact-dot empty"></div></div></td>
+              <td>10–15 seg</td>
+            </tr>
+            <tr>
+              <td style="font-family:'IBM Plex Mono',monospace;color:#AAA;font-size:12px;">S11</td>
+              <td style="font-weight:600;">Footer</td>
+              <td><span class="prio-badge baja">Baja</span></td>
+              <td><div class="impact-bar"><div class="impact-dot filled"></div><div class="impact-dot empty"></div><div class="impact-dot empty"></div><div class="impact-dot empty"></div><div class="impact-dot empty"></div></div></td>
+              <td>10–20 seg</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- MEJORAS PARA MAXIMIZAR CONVERSIÓN -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">—</span>
+          <h2 class="section-title">Análisis y Mejoras para Maximizar la Conversión</h2>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">01</span>
+          <div class="imp-content">
+            <div class="imp-title">CTA sticky en el header durante todo el scroll</div>
+            <div class="imp-why">El visitante promedio toma la decisión en cualquier punto del recorrido, no solo en los CTAs definidos. Un header fijo con el botón de instalación visible en todo momento captura las conversiones impulsivas — que son las más frecuentes en este perfil de usuario.</div>
+            <div class="imp-how">Header con logo + CTA principal siempre visible. En mobile puede ser una barra fija en la parte inferior de la pantalla (más accesible con el pulgar).</div>
+          </div>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">02</span>
+          <div class="imp-content">
+            <div class="imp-title">Botón de WhatsApp flotante permanente</div>
+            <div class="imp-why">El visitante indeciso que no convierte en la primera visita raramente vuelve. Un acceso directo a WhatsApp en cualquier punto de la landing captura a los prospectos de alta intención que tienen una duda específica que no encuentran resuelta.</div>
+            <div class="imp-how">Botón flotante en esquina inferior derecha, visible en todo el scroll excepto sobre los CTAs principales para no competir.</div>
+          </div>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">03</span>
+          <div class="imp-content">
+            <div class="imp-title">Micro-evidencia de offline en el Hero mismo</div>
+            <div class="imp-why">La objeción "¿funciona sin internet de verdad?" es tan dominante que no puede esperar hasta el FAQ. Incluir una señal visual en el Hero — un ícono de "sin wifi" o el indicador 📴 offline de la app — resuelve parcialmente la objeción antes de que se forme.</div>
+            <div class="imp-how">Un elemento visual pequeño en la zona del Hero: "✓ Sin internet · ✓ Sin servidor · ✓ Solo tu teléfono".</div>
+          </div>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">04</span>
+          <div class="imp-content">
+            <div class="imp-title">Mover un mini-testimonio al bloque del Hero o inmediatamente después</div>
+            <div class="imp-why">La prueba social temprana reduce el escepticismo antes de que el visitante haya invertido tiempo leyendo. Una cita corta de un dueño real ("Mi caja cuadra todos los días desde que lo uso — Bodega El Progreso") funciona como validador de entrada, no de cierre.</div>
+            <div class="imp-how">Una cita de 1 línea con nombre y tipo de negocio debajo del headline del Hero, o como primer elemento debajo del fold.</div>
+          </div>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">05</span>
+          <div class="imp-content">
+            <div class="imp-title">Eliminar fricción de instalación con instrucciones explícitas</div>
+            <div class="imp-why">Una PWA se instala de forma diferente a una app nativa. El visitante que nunca ha instalado una PWA puede abandonar si el proceso no es guiado explícitamente. La fricción en el momento de conversión destruye todo el trabajo previo de la landing.</div>
+            <div class="imp-how">Después del CTA o en la sección "Cómo funciona", incluir micro-instrucción: "Abre este enlace en Chrome, toca el menú y selecciona Instalar". Considerar una animación corta del proceso.</div>
+          </div>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">06</span>
+          <div class="imp-content">
+            <div class="imp-title">El punto de honestidad como argumento de confianza</div>
+            <div class="imp-why">Declarar explícitamente lo que MypiCuadre NO hace (sin iOS nativo, sin facturación fiscal) en lugar de esconderlo en el footer genera más confianza de la que resta. Un producto que admite sus limitaciones parece más confiable que uno que promete todo. Esto es especialmente crítico en un mercado donde la desconfianza ante lo desconocido es alta.</div>
+            <div class="imp-how">En la sección de Diferenciadores, incluir una fila de "Lo que no hacemos y por qué eso es bueno". Posicionarlo como honestidad, no como debilidad.</div>
+          </div>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">07</span>
+          <div class="imp-content">
+            <div class="imp-title">Diseñar la landing para mobile-first con lectura rápida</div>
+            <div class="imp-why">El visitante llega desde un smartphone Android en condiciones de uso intermitente (caminando, entre tareas, con poca batería). La landing debe funcionar perfectamente con una conexión lenta y con atención fragmentada. Bloques de texto largo son la causa número uno de abandono en este perfil.</div>
+            <div class="imp-how">Párrafos de máximo 3 líneas en mobile. Jerarquía visual clara con titulares que comunican el punto completo sin necesidad de leer el cuerpo. Imágenes optimizadas para carga rápida.</div>
+          </div>
+        </div>
+
+        <div class="improvement-item">
+          <span class="imp-num">08</span>
+          <div class="imp-content">
+            <div class="imp-title">Ancla de "Compartir" como mecanismo de referidos integrado</div>
+            <div class="imp-why">En el mercado cubano, el canal de mayor credibilidad es la recomendación entre iguales. Una landing que facilita compartirla por WhatsApp activa el canal más efectivo de adquisición sin costo adicional.</div>
+            <div class="imp-how">Botón "Comparte con un dueño de negocio" con texto pre-redactado para WhatsApp. Ubicar en el CTA Final y opcionalmente en el Footer.</div>
+          </div>
+        </div>
+
+      </div>
+
+    </td></tr></tbody>
+    <tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+  </table>
+</main>
+</x-dc>
+</body>
+</html>

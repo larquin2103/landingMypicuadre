@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-print-defaults>
+@media print {
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  figure, table, pre, blockquote, img, svg, tr, [class~="card" i] { break-inside: avoid; }
+  img, svg { max-width: 100%; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #F0EDE8; font-family: 'Plus Jakarta Sans', sans-serif; color: #0F1217; }
+
+    .doc { max-width: 8.5in; margin: 0 auto; background: #FAFAF8; padding: 64px clamp(24px, 5vw, 0.85in) 96px; }
+    .doc-frame { width: 100%; border-collapse: collapse; }
+    .doc-frame td { padding: 0; }
+    .hdr-space, .ftr-space { display: none; }
+
+    /* Cover */
+    .cover { border-bottom: 3px solid #0F1217; padding-bottom: 40px; margin-bottom: 56px; }
+    .cover-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #999; margin: 0 0 18px; }
+    .cover h1 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 44px; font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; margin: 0 0 10px; }
+    .cover-sub { font-size: 17px; font-weight: 300; color: #6B6560; margin: 0 0 30px; }
+    .cover-meta { display: flex; gap: 32px; flex-wrap: wrap; }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA; }
+    .meta-val { font-size: 13px; font-weight: 600; color: #333; }
+
+    /* Sections */
+    .section { margin-bottom: 56px; }
+    .sec-hdr { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; padding-bottom: 10px; border-bottom: 1.5px solid #E2DDD7; }
+    .sec-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #C0BAB4; min-width: 28px; }
+    .sec-title { font-family: 'Bricolage Grotesque', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; color: #0F1217; margin: 0; }
+
+    p { font-size: 14.5px; line-height: 1.72; margin: 0 0 14px; color: #2A2520; text-wrap: pretty; }
+    p:last-child { margin-bottom: 0; }
+    ul, ol { margin: 0 0 14px; padding-left: 20px; }
+    li { font-size: 14.5px; line-height: 1.65; color: #2A2520; margin-bottom: 5px; }
+    li strong { color: #0F1217; font-weight: 600; }
+    strong { color: #0F1217; }
+
+    /* Highlight */
+    .hl { background: #0F1217; color: #F5F2EE; padding: 24px 28px; border-radius: 4px; margin-bottom: 20px; }
+    .hl p { color: #F5F2EE; font-size: 15px; font-weight: 500; line-height: 1.6; margin: 0; }
+
+    /* Two columns */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 14px; }
+    .col-cell { background: #F0EDE8; padding: 18px 20px; }
+    .col-cell:first-child { border-radius: 4px 0 0 4px; }
+    .col-cell:last-child { border-radius: 0 4px 4px 0; }
+    .col-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #A8A29C; margin-bottom: 8px; }
+    .col-val { font-size: 13.5px; line-height: 1.6; color: #2A2520; }
+
+    /* Moodboard cards */
+    .mood-card { border: 1.5px solid #E2DDD7; border-radius: 6px; margin-bottom: 16px; overflow: hidden; break-inside: avoid; }
+    .mood-header { padding: 16px 22px; display: flex; align-items: center; justify-content: space-between; }
+    .mood-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 16px; font-weight: 700; color: #0F1217; }
+    .mood-rec { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; }
+    .mood-rec.recommended { background: #0F1217; color: #F5F2EE; }
+    .mood-rec.option { background: #E8E4E0; color: #888; }
+    .mood-body { padding: 0 22px 20px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px 24px; }
+    .mood-field-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #B0AAA4; margin-bottom: 5px; }
+    .mood-field-val { font-size: 13px; line-height: 1.6; color: #2A2520; }
+    .mood-field.full { grid-column: 1 / -1; }
+    .mood-palette { display: flex; gap: 4px; margin-top: 6px; }
+    .mood-swatch { width: 28px; height: 28px; border-radius: 3px; }
+    .mood-divider { height: 1px; background: #E8E4E0; margin: 0 22px 16px; }
+
+    /* Color system */
+    .color-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; }
+    .color-row { display: flex; gap: 0; align-items: stretch; background: #F0EDE8; }
+    .color-swatch-lg { width: 72px; flex-shrink: 0; }
+    .color-info { padding: 12px 16px; flex: 1; }
+    .color-name { font-size: 12px; font-weight: 700; color: #0F1217; margin-bottom: 2px; }
+    .color-hex { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #888; margin-bottom: 4px; }
+    .color-why { font-size: 12px; line-height: 1.5; color: #555; }
+    .color-grid .color-row:nth-child(odd):last-child { grid-column: 1 / -1; }
+
+    /* Type specimens */
+    .type-specimen { background: #F0EDE8; border-radius: 4px; padding: 22px 24px; margin-bottom: 10px; break-inside: avoid; }
+    .type-role { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #A8A29C; margin-bottom: 12px; }
+    .type-sample-h1 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 40px; font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; color: #0F1217; margin: 0 0 8px; }
+    .type-sample-h2 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 28px; font-weight: 700; line-height: 1.1; letter-spacing: -0.015em; color: #0F1217; margin: 0 0 8px; }
+    .type-sample-h3 { font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; color: #0F1217; margin: 0 0 8px; }
+    .type-sample-body { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 16px; font-weight: 400; line-height: 1.7; color: #2A2520; margin: 0 0 8px; }
+    .type-sample-ui { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 500; line-height: 1.4; color: #0F1217; margin: 0 0 8px; }
+    .type-sample-mono { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; line-height: 1.5; color: #0F1217; margin: 0; }
+    .type-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 10px; padding-top: 10px; border-top: 1px solid #E2DDD7; }
+    .type-meta-item { font-size: 11.5px; color: #888; }
+    .type-meta-item strong { color: #555; font-weight: 600; }
+
+    /* Spacing scale */
+    .spacing-scale { display: flex; flex-direction: column; gap: 2px; }
+    .space-row { display: flex; align-items: center; gap: 16px; background: #F0EDE8; padding: 10px 16px; }
+    .space-token { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #888; min-width: 60px; }
+    .space-val { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #A8A29C; min-width: 36px; }
+    .space-bar-wrap { flex: 1; }
+    .space-bar { height: 8px; background: #0F1217; border-radius: 1px; }
+    .space-use { font-size: 12px; color: #666; margin-left: auto; }
+
+    /* Border / Shadow / Icon rows */
+    .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .spec-cell { background: #F0EDE8; padding: 18px 20px; }
+    .spec-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #B0AAA4; margin-bottom: 6px; }
+    .spec-val { font-size: 13.5px; line-height: 1.6; color: #2A2520; }
+    .spec-demo { margin-top: 10px; }
+
+    /* Component rules table */
+    .comp-table { width: 100%; border-collapse: collapse; }
+    .comp-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #B0AAA4; padding: 8px 12px; border-bottom: 1.5px solid #E2DDD7; }
+    .comp-table td { font-size: 13px; line-height: 1.6; padding: 11px 12px; border-bottom: 1px solid #ECEAE5; vertical-align: top; color: #2A2520; }
+    .comp-table td:first-child { font-weight: 700; color: #0F1217; white-space: nowrap; }
+    .comp-table tr:last-child td { border-bottom: none; }
+
+    /* Responsive breakpoints */
+    .bp-track { display: flex; flex-direction: column; gap: 2px; }
+    .bp-row { display: grid; grid-template-columns: 120px 1fr; gap: 2px; }
+    .bp-label { background: #0F1217; color: #F5F2EE; padding: 16px 18px; display: flex; flex-direction: column; justify-content: center; }
+    .bp-name { font-family: 'Bricolage Grotesque', sans-serif; font-size: 15px; font-weight: 700; }
+    .bp-range { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #888; margin-top: 2px; }
+    .bp-specs { background: #F0EDE8; padding: 16px 18px; }
+    .bp-spec-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 3px; }
+    .bp-spec-list li { font-size: 13px; line-height: 1.55; color: #2A2520; }
+    .bp-spec-list li::before { content: '—'; margin-right: 8px; color: #C0BAB4; }
+
+    /* Motion */
+    .motion-row { display: flex; gap: 0; align-items: stretch; margin-bottom: 2px; }
+    .motion-type { background: #0F1217; color: #F5F2EE; padding: 14px 18px; min-width: 140px; display: flex; align-items: center; font-size: 13px; font-weight: 600; }
+    .motion-spec { background: #F0EDE8; padding: 14px 18px; flex: 1; font-size: 13px; line-height: 1.55; color: #2A2520; }
+
+    /* WCAG */
+    .wcag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .wcag-cell { background: #F0EDE8; padding: 16px 18px; }
+    .wcag-lbl { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+    .wcag-badge { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 2px; margin-bottom: 6px; }
+    .wcag-badge.aa { background: #D4EDDA; color: #155724; }
+    .wcag-badge.aaa { background: #CCE5FF; color: #004085; }
+    .wcag-val { font-size: 13px; line-height: 1.55; color: #2A2520; }
+
+    /* Illustration / photo */
+    .style-row { border-left: 3px solid #0F1217; padding: 10px 0 10px 16px; margin-bottom: 10px; }
+    .style-row-title { font-size: 14px; font-weight: 700; color: #0F1217; margin-bottom: 3px; }
+    .style-row-desc { font-size: 13.5px; line-height: 1.6; color: #444; }
+
+    @page { size: letter; margin: 0; }
+    @media print {
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      html, body { margin: 0; padding: 0; }
+      .doc { max-width: none !important; margin: 0 !important; padding: 0 0.75in !important; }
+      .hdr-space, .ftr-space { display: table-cell; height: 0.65in; }
+      h2 { break-after: avoid; }
+      .section { break-inside: avoid-page; }
+      .mood-card, .type-specimen, .bp-row { break-inside: avoid; }
+    }
+  </style>
+</helmet>
+
+<main class="doc">
+  <table class="doc-frame" role="presentation">
+    <thead><tr><td class="hdr-space"></td></tr></thead>
+    <tbody><tr><td>
+
+      <!-- COVER -->
+      <div class="cover">
+        <p class="cover-eyebrow">Documento Estratégico — Fase 3</p>
+        <h1>Design System Foundation</h1>
+        <p class="cover-sub">MypiCuadre — Sistema visual base para toda la interfaz</p>
+        <div class="cover-meta">
+          <div class="meta-item"><span class="meta-lbl">Producto</span><span class="meta-val">MypiCuadre</span></div>
+          <div class="meta-item"><span class="meta-lbl">Basado en</span><span class="meta-val">Brand Brief + UX Blueprint</span></div>
+          <div class="meta-item"><span class="meta-lbl">Rol</span><span class="meta-val">Dir. Arte · UI Design Sr. · Design System Architect</span></div>
+          <div class="meta-item"><span class="meta-lbl">Versión</span><span class="meta-val">1.0 — Junio 2026</span></div>
+        </div>
+      </div>
+
+      <!-- 01 DIRECCIÓN ARTÍSTICA -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">01</span><h2 class="sec-title">Dirección Artística</h2></div>
+        <div class="hl"><p>MypiCuadre debe verse como la herramienta de control de un negocio serio — no como una startup de Silicon Valley ni como un software corporativo frío. La referencia visual es la de una empresa independiente latinoamericana de clase mundial: sólida, honesta, con carácter propio.</p></div>
+
+        <div class="two-col">
+          <div class="col-cell">
+            <div class="col-lbl">Personalidad visual</div>
+            <div class="col-val">Seria sin ser intimidante. Cálida sin ser informal. Moderna sin ser genérica. El equivalente visual de un contador de confianza que también entiende de diseño.</div>
+          </div>
+          <div class="col-cell">
+            <div class="col-lbl">Sensaciones que produce</div>
+            <div class="col-val">Control. Orden. Claridad. Confianza inmediata. La sensación de que las cosas están en su lugar y nada se escapa.</div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="col-cell">
+            <div class="col-lbl">Nivel de sofisticación</div>
+            <div class="col-val">Alto en ejecución, accesible en percepción. Nunca ostentoso. La sofisticación se manifiesta en los detalles — spacing preciso, jerarquía tipográfica clara — no en efectos visuales.</div>
+          </div>
+          <div class="col-cell">
+            <div class="col-lbl">Referente de empresa</div>
+            <div class="col-val">Una firma de contabilidad boutique latinoamericana que rediseñó su identidad con criterio. O una bodega premium que cuida cada detalle sin volverse un producto de lujo.</div>
+          </div>
+        </div>
+
+        <p>El sistema visual prioriza la <strong>legibilidad de números y datos</strong> sobre la expresividad decorativa. En un POS, cada cifra comunica dinero real. El diseño debe hacer que esos números sean inequívocos, fáciles de leer y difíciles de malinterpretar. Esto se traduce en: tipografía con excelente diferenciación de dígitos, espaciado generoso en tablas y badges de monto, y contraste máximo en los elementos de acción.</p>
+        <p>El sistema rechaza explícitamente: gradientes de fondo agresivos, esquinas muy redondeadas como estilo dominante, paletas de colores saturados-multicolor, iconografía ilustrativa, y cualquier elemento decorativo que no aporte función.</p>
+      </div>
+
+      <!-- 02 MOODBOARD -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">02</span><h2 class="sec-title">Moodboard — Tres Direcciones Visuales</h2></div>
+
+        <div class="mood-card">
+          <div class="mood-header" style="background:#F5F0E8;">
+            <span class="mood-name">Dirección A — "Registro Oficial"</span>
+            <span class="mood-rec option">Opción</span>
+          </div>
+          <div class="mood-divider"></div>
+          <div class="mood-body">
+            <div class="mood-field full">
+              <div class="mood-field-lbl">Descripción</div>
+              <div class="mood-field-val">Inspirado en los libros de cuentas cubanos, documentos oficiales y tipografía de máquina de escribir modernizada. Crema envejecida como fondo, negro profundo como texto, estructura de cuadrícula rígida. Elementos de monospace prominentes para cantidades y fechas.</div>
+            </div>
+            <div class="mood-palette"><div class="mood-swatch" style="background:#F5EDD8;"></div><div class="mood-swatch" style="background:#1A1410;"></div><div class="mood-swatch" style="background:#8B7355;"></div><div class="mood-swatch" style="background:#C8A870;"></div></div>
+            <div>
+              <div class="mood-field-lbl">Ventajas</div>
+              <div class="mood-field-val">Máxima autenticidad cultural. Completamente diferente al SaaS genérico. Evoca credibilidad y permanencia.</div>
+            </div>
+            <div>
+              <div class="mood-field-lbl">Desventajas</div>
+              <div class="mood-field-val">Puede percibirse como anticuado. Baja aspiracionalidad. Difícil de escalar a pantallas digitales brillantes.</div>
+            </div>
+            <div class="mood-field full">
+              <div class="mood-field-lbl">Cuándo utilizarla</div>
+              <div class="mood-field-val">Si el objetivo principal es credibilidad máxima con usuarios muy conservadores, y se acepta sacrificar aspiracionalidad moderna.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mood-card">
+          <div class="mood-header" style="background:#0F1217;">
+            <span class="mood-name" style="color:#F5F2EE;">Dirección B — "Sala de Control"</span>
+            <span class="mood-rec option">Opción</span>
+          </div>
+          <div class="mood-divider"></div>
+          <div class="mood-body">
+            <div class="mood-field full">
+              <div class="mood-field-lbl">Descripción</div>
+              <div class="mood-field-val">Dark mode como base. Fondos muy oscuros (#0F1217), texto claro, acento verde-ámbar que evoca terminales financieras clásicas pero modernizadas. Tipografía técnica con alta densidad de información. El dueño se siente como piloto de su negocio.</div>
+            </div>
+            <div class="mood-palette"><div class="mood-swatch" style="background:#0F1217;border:1px solid #333;"></div><div class="mood-swatch" style="background:#1C2530;"></div><div class="mood-swatch" style="background:#2ECC71;"></div><div class="mood-swatch" style="background:#F0A500;"></div></div>
+            <div>
+              <div class="mood-field-lbl">Ventajas</div>
+              <div class="mood-field-val">Poderoso, diferencial, comunica control absoluto. Los números sobre fondo oscuro son muy legibles.</div>
+            </div>
+            <div>
+              <div class="mood-field-lbl">Desventajas</div>
+              <div class="mood-field-val">Intimidante para el perfil demográfico objetivo. Puede verse como "para técnicos". Costoso en batería en pantallas OLED de gama baja.</div>
+            </div>
+            <div class="mood-field full">
+              <div class="mood-field-lbl">Cuándo utilizarla</div>
+              <div class="mood-field-val">Si la audiencia primaria fueran usuarios más jóvenes o con mayor afinidad tecnológica. Excelente para la app en sí — no recomendado para la landing de captación.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mood-card" style="border-color:#0F1217;border-width:2px;">
+          <div class="mood-header" style="background:#F5F2EE;">
+            <span class="mood-name">Dirección C — "Mercado Moderno" ✦ Recomendada</span>
+            <span class="mood-rec recommended">Recomendada</span>
+          </div>
+          <div class="mood-divider"></div>
+          <div class="mood-body">
+            <div class="mood-field full">
+              <div class="mood-field-lbl">Descripción</div>
+              <div class="mood-field-val">Off-whites cálidos como base. Negro profundo para texto y elementos de acción. Un acento terracota/ámbar que aporta carácter latinoamericano sin ser folclórico. Tipografía con personalidad (Bricolage Grotesque) para títulos, humanista limpia para cuerpo. Grid sólido, espaciado generoso, cero ornamentación. La sofisticación está en la ejecución, no en los efectos.</div>
+            </div>
+            <div class="mood-palette"><div class="mood-swatch" style="background:#F7F4F0;border:1px solid #ddd;"></div><div class="mood-swatch" style="background:#0F1217;"></div><div class="mood-swatch" style="background:#C8622A;"></div><div class="mood-swatch" style="background:#E8E2DA;"></div><div class="mood-swatch" style="background:#2A6B3C;"></div></div>
+            <div>
+              <div class="mood-field-lbl">Ventajas</div>
+              <div class="mood-field-val">Balance perfecto entre aspiracional y accesible. Cálido sin ser informal. Funciona para todos los rangos etarios del público objetivo. Escalable a pantallas pequeñas y de baja calidad. Atemporal.</div>
+            </div>
+            <div>
+              <div class="mood-field-lbl">Desventajas</div>
+              <div class="mood-field-val">Requiere ejecución precisa para no volverse genérico. El riesgo está en la implementación, no en la dirección.</div>
+            </div>
+            <div class="mood-field full">
+              <div class="mood-field-lbl">Por qué se recomienda</div>
+              <div class="mood-field-val">Alinea perfectamente con los valores de marca (confiable, directo, cubano, moderno-accesible), funciona para el perfil de visitante frío/tibio, es la dirección más efectiva para convertir en la landing, y la más escalable hacia la app y materiales futuros.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 PALETA DE COLORES -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">03</span><h2 class="sec-title">Paleta de Colores</h2></div>
+        <div class="color-grid">
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#0F1217;"></div>
+            <div class="color-info">
+              <div class="color-name">Primary — Noir Profundo</div>
+              <div class="color-hex">#0F1217</div>
+              <div class="color-why">Negro con matiz azulado muy sutil. Transmite autoridad, control y seriedad sin la frialdad del negro puro. Es el color del texto principal, CTAs primarios y elementos de máxima jerarquía. Psicológicamente: poder, precisión, confianza.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#C8622A;"></div>
+            <div class="color-info">
+              <div class="color-name">Accent — Terracota Activo</div>
+              <div class="color-hex">#C8622A</div>
+              <div class="color-why">Terracota cálido con energía. Aporta el carácter latinoamericano sin ser folklórico. Reservado para el único CTA principal de conversión y momentos de máxima atención. Psicológicamente: acción, calor, urgencia moderada, autenticidad.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#2A6B3C;"></div>
+            <div class="color-info">
+              <div class="color-name">Success — Verde Cuadre</div>
+              <div class="color-hex">#2A6B3C</div>
+              <div class="color-why">Verde bosque profundo. Comunica que la caja cuadró, que todo está correcto, que el negocio va bien. Es el color del semáforo verde del producto. Psicológicamente: seguridad, corrección, alivio, prosperidad.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#B07D10;"></div>
+            <div class="color-info">
+              <div class="color-name">Warning — Ámbar Vigilancia</div>
+              <div class="color-hex">#B07D10</div>
+              <div class="color-why">Ámbar oscuro, nunca amarillo brillante. Señala diferencias pequeñas en caja, alertas de stock bajo, licencia próxima a vencer. Psicológicamente: atención sin alarma, precaución, "revisa esto".</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#B03030;"></div>
+            <div class="color-info">
+              <div class="color-name">Error — Rojo Alerta</div>
+              <div class="color-hex">#B03030</div>
+              <div class="color-why">Rojo oscuro y controlado. Para diferencias grandes de caja, errores críticos, acciones destructivas. Nunca el rojo primario estándar — este es más serio y menos alarmista. Psicológicamente: problema, acción requerida, urgencia real.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#F7F4F0; border: 1px solid #E2DDD7;"></div>
+            <div class="color-info">
+              <div class="color-name">Background — Blanco Cálido</div>
+              <div class="color-hex">#F7F4F0</div>
+              <div class="color-why">Off-white con matiz cálido. Nunca blanco puro (#FFFFFF) en áreas grandes — el blanco puro fatiga la vista y es frío. Esta base crea la sensación de papel de calidad, de algo físico y confiable. Psicológicamente: calidez, familiaridad, tranquilidad.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#FFFFFF; border: 1px solid #E2DDD7;"></div>
+            <div class="color-info">
+              <div class="color-name">Surface — Blanco Superficie</div>
+              <div class="color-hex">#FFFFFF</div>
+              <div class="color-why">Blanco puro solo para superficies elevadas: tarjetas, modales, inputs. Contrasta levemente con el background para crear profundidad sin sombras pesadas. La elevación se comunica por diferencia de superficie, no por shadow.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#E2DDD7; border: 1px solid #E2DDD7;"></div>
+            <div class="color-info">
+              <div class="color-name">Border — Arena Línea</div>
+              <div class="color-hex">#E2DDD7</div>
+              <div class="color-why">Borde cálido que separa sin cortar. Las líneas divisorias no deben ser grises neutros — el matiz cálido las integra al sistema de color. Psicológicamente: estructura, organización, sin agresividad.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#0F1217;"></div>
+            <div class="color-info">
+              <div class="color-name">Text Primary — Noir Texto</div>
+              <div class="color-hex">#0F1217</div>
+              <div class="color-why">Igual que Primary. Todo texto de alta jerarquía (títulos, labels, valores de datos, cantidades) usa este color. La consistencia entre el color de acción y el color de texto comunica cohesión y control.</div>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <div class="color-swatch-lg" style="background:#6B6560;"></div>
+            <div class="color-info">
+              <div class="color-name">Text Secondary — Gris Cálido</div>
+              <div class="color-hex">#6B6560</div>
+              <div class="color-why">Para metadatos, labels secundarios, texto de apoyo. Tiene el mismo matiz cálido que el sistema. Nunca usar grises fríos (#666, #999 neutros) — romperían la temperatura del sistema. Cumple AA de contraste sobre fondos claros.</div>
+            </div>
+          </div>
+
+          <div class="color-row" style="grid-column: 1 / -1;">
+            <div class="color-swatch-lg" style="background:#EAF2EC;"></div>
+            <div class="color-info">
+              <div class="color-name">Secondary / Tint — Verde Cuadre Suave</div>
+              <div class="color-hex">#EAF2EC</div>
+              <div class="color-why">Versión tint del color Success para backgrounds de estados positivos (caja cuadrada, stock correcto, operación exitosa). Nunca usar el verde oscuro como fondo — solo el tint claro. Su equivalente para Warning es #F5EDD4 y para Error es #FAECEC.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 04 TIPOGRAFÍA -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">04</span><h2 class="sec-title">Tipografía</h2></div>
+
+        <div class="type-specimen">
+          <div class="type-role">Headings — Bricolage Grotesque</div>
+          <div class="type-sample-h1">Control total de tu negocio</div>
+          <div class="type-sample-h2">Tu caja cuadra sola</div>
+          <div class="type-sample-h3">Sin internet, sin errores</div>
+          <div class="type-meta">
+            <span class="type-meta-item"><strong>Familia:</strong> Bricolage Grotesque</span>
+            <span class="type-meta-item"><strong>Pesos:</strong> 600, 700, 800</span>
+            <span class="type-meta-item"><strong>Tracking:</strong> -0.025em (H1) a -0.01em (H3)</span>
+            <span class="type-meta-item"><strong>Escala:</strong> 40 / 28 / 20 / 17px</span>
+          </div>
+          <p style="font-size:13px;color:#666;margin-top:12px;margin-bottom:0;">Bricolage Grotesque tiene un carácter óptico variable que le da personalidad sin perder legibilidad. Sus letras anchas y el peso expressivo en mayúsculas comunican autoridad y presencia. No es Inter ni Roboto — tiene un alma propia que diferencia a MypiCuadre de cualquier SaaS genérico. Excelente diferenciación entre caracteres similares (I/l/1), crítico para una app con números y códigos.</p>
+        </div>
+
+        <div class="type-specimen">
+          <div class="type-role">Body — Plus Jakarta Sans</div>
+          <div class="type-sample-body">MypiCuadre guarda todos los datos en tu teléfono. No necesita internet para funcionar. Cuando hay conexión, sincroniza automáticamente. Cuando no hay, tu negocio sigue operando exactamente igual.</div>
+          <div class="type-meta">
+            <span class="type-meta-item"><strong>Familia:</strong> Plus Jakarta Sans</span>
+            <span class="type-meta-item"><strong>Pesos:</strong> 300, 400, 500</span>
+            <span class="type-meta-item"><strong>Line-height:</strong> 1.70 – 1.75</span>
+            <span class="type-meta-item"><strong>Tamaño base:</strong> 16px desktop · 15px mobile</span>
+          </div>
+          <p style="font-size:13px;color:#666;margin-top:12px;margin-bottom:0;">Humanista geométrica con warmth sutil. Excelente legibilidad en pantallas de baja resolución (clave para smartphones Android gama media). Se diferencia de Bricolage Grotesque lo suficiente para crear jerarquía clara entre títulos y cuerpo sin necesitar dos familias radicalmente distintas. El sistema mantiene coherencia cromática.</p>
+        </div>
+
+        <div class="type-specimen">
+          <div class="type-role">UI Labels — Plus Jakarta Sans Medium</div>
+          <div class="type-sample-ui">Abrir turno · Cerrar turno · Cuadre de caja · Ver historial · Exportar PDF</div>
+          <div class="type-meta">
+            <span class="type-meta-item"><strong>Familia:</strong> Plus Jakarta Sans</span>
+            <span class="type-meta-item"><strong>Peso:</strong> 500 – 600</span>
+            <span class="type-meta-item"><strong>Tamaño:</strong> 13 – 15px</span>
+            <span class="type-meta-item"><strong>Tracking:</strong> 0 a +0.02em en labels pequeños</span>
+          </div>
+          <p style="font-size:13px;color:#666;margin-top:12px;margin-bottom:0;">La misma familia en peso medio para etiquetas, botones, navegación y labels de formulario. La consistencia de familia refuerza la cohesión del sistema. El peso 500 aporta la claridad necesaria para elementos funcionales sin la pesadez del 700.</p>
+        </div>
+
+        <div class="type-specimen">
+          <div class="type-role">Monospace — JetBrains Mono (Cantidades, Códigos, Datos)</div>
+          <div class="type-sample-mono">MN 1,250.00 · USD 45.00 · Diferencia: +2.50 MN</div>
+          <div class="type-meta">
+            <span class="type-meta-item"><strong>Familia:</strong> JetBrains Mono</span>
+            <span class="type-meta-item"><strong>Pesos:</strong> 400, 500, 600</span>
+            <span class="type-meta-item"><strong>Uso:</strong> Cantidades monetarias, códigos de barras, PINs, fechas/horas, badges de datos</span>
+          </div>
+          <p style="font-size:13px;color:#666;margin-top:12px;margin-bottom:0;">En un POS, los números son el elemento más crítico de la interfaz. JetBrains Mono tiene la mejor diferenciación de dígitos del ecosistema de fuentes libres: el 0 lleva barra diagonal, el 1 tiene serif inferior, el 6 y el 9 son inequívocos. Los anchos fijos alinean columnas de cantidades perfectamente. Se usa exclusivamente para datos numéricos, fechas y códigos — nunca para texto corrido.</p>
+        </div>
+      </div>
+
+      <!-- 05 ESPACIADO -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">05</span><h2 class="sec-title">Sistema de Espaciado</h2></div>
+        <p>Base unit de <strong>4px</strong>. Todos los valores de padding, margin, gap y sizing son múltiplos de 4. Esto garantiza alineación perfecta entre componentes y facilita el trabajo en cualquier herramienta de diseño.</p>
+        <div class="spacing-scale">
+          <div class="space-row"><span class="space-token">space-1</span><span class="space-val">4px</span><div class="space-bar-wrap"><div class="space-bar" style="width:4px;"></div></div><span class="space-use">Gaps internos mínimos, separadores de icon+label</span></div>
+          <div class="space-row"><span class="space-token">space-2</span><span class="space-val">8px</span><div class="space-bar-wrap"><div class="space-bar" style="width:8px;"></div></div><span class="space-use">Padding interno de badges, chips, separación inline</span></div>
+          <div class="space-row"><span class="space-token">space-3</span><span class="space-val">12px</span><div class="space-bar-wrap"><div class="space-bar" style="width:12px;"></div></div><span class="space-use">Padding de botones pequeños, gap entre items de lista</span></div>
+          <div class="space-row"><span class="space-token">space-4</span><span class="space-val">16px</span><div class="space-bar-wrap"><div class="space-bar" style="width:16px;"></div></div><span class="space-use">Padding base de tarjetas, inputs, filas de tabla</span></div>
+          <div class="space-row"><span class="space-token">space-6</span><span class="space-val">24px</span><div class="space-bar-wrap"><div class="space-bar" style="width:24px;"></div></div><span class="space-use">Padding interno de secciones, gap entre columnas</span></div>
+          <div class="space-row"><span class="space-token">space-8</span><span class="space-val">32px</span><div class="space-bar-wrap"><div class="space-bar" style="width:32px;"></div></div><span class="space-use">Separación entre componentes, padding de tarjetas grandes</span></div>
+          <div class="space-row"><span class="space-token">space-10</span><span class="space-val">40px</span><div class="space-bar-wrap"><div class="space-bar" style="width:40px;"></div></div><span class="space-use">Separación entre secciones de la landing (mobile)</span></div>
+          <div class="space-row"><span class="space-token">space-12</span><span class="space-val">48px</span><div class="space-bar-wrap"><div class="space-bar" style="width:48px;"></div></div><span class="space-use">Padding vertical de secciones, separación entre bloques</span></div>
+          <div class="space-row"><span class="space-token">space-16</span><span class="space-val">64px</span><div class="space-bar-wrap"><div class="space-bar" style="width:64px;"></div></div><span class="space-use">Secciones de landing en desktop, hero padding vertical</span></div>
+          <div class="space-row"><span class="space-token">space-20</span><span class="space-val">80px</span><div class="space-bar-wrap"><div class="space-bar" style="width:80px;"></div></div><span class="space-use">Separación entre secciones grandes (desktop)</span></div>
+          <div class="space-row"><span class="space-token">space-24</span><span class="space-val">96px</span><div class="space-bar-wrap"><div class="space-bar" style="width:96px;"></div></div><span class="space-use">Secciones hero y CTA final, márgenes de página</span></div>
+        </div>
+        <p style="margin-top:16px;"><strong>Regla de oro:</strong> nunca usar valores fuera de esta escala. Si algo "necesita" 20px, usar 16 o 24. La consistencia del grid supera el ajuste visual ad-hoc.</p>
+      </div>
+
+      <!-- 06 BORDES -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">06</span><h2 class="sec-title">Bordes</h2></div>
+        <div class="spec-grid">
+          <div class="spec-cell">
+            <div class="spec-lbl">Border Radius — Escala</div>
+            <div class="spec-val">
+              <strong>radius-1:</strong> 2px — Badges, chips de estado, tags pequeños<br>
+              <strong>radius-2:</strong> 4px — Tarjetas, inputs, botones estándar, tooltips<br>
+              <strong>radius-3:</strong> 6px — Tarjetas grandes, modales, paneles<br>
+              <strong>radius-full:</strong> 100px — Solo para el CTA principal terracota en la landing. Crear contraste visual con el resto del sistema.
+            </div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">Border Width — Escala</div>
+            <div class="spec-val">
+              <strong>1px:</strong> Bordes estándar de inputs, tarjetas, divisores<br>
+              <strong>1.5px:</strong> Bordes de énfasis, estados de hover en tarjetas<br>
+              <strong>2px:</strong> Estado focused de inputs, bordes de selección activa<br>
+              <strong>3px:</strong> Separadores de sección, bordes de acento decorativo<br>
+              <strong>4px:</strong> Indicadores de semáforo (verde/ámbar/rojo) en componentes de cuadre
+            </div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">Color de borde</div>
+            <div class="spec-val">
+              Por defecto: <strong>#E2DDD7</strong> (Border token)<br>
+              Hover: <strong>#C8C2BA</strong><br>
+              Focus: <strong>#0F1217</strong> (Primary)<br>
+              Error: <strong>#B03030</strong><br>
+              Success: <strong>#2A6B3C</strong>
+            </div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">Filosofía de uso</div>
+            <div class="spec-val">El sistema prefiere bordes sobre sombras para comunicar estructura. Los bordes son honestos — muestran exactamente dónde termina un elemento. Las sombras simulan elevación que en este producto no es necesaria. Menos sombras = mayor claridad visual en pantallas de baja calidad.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 07 SOMBRAS -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">07</span><h2 class="sec-title">Sombras</h2></div>
+        <p>El sistema de sombras es intencionalmente mínimo. La elevación se comunica primero por diferencia de color de superficie (background vs. surface) y segundo por borde. Las sombras se reservan para elementos que genuinamente flotan sobre el contenido.</p>
+        <div class="spec-grid">
+          <div class="spec-cell">
+            <div class="spec-lbl">shadow-none</div>
+            <div class="spec-val">Sin sombra. Para el 90% de los componentes: tarjetas sobre fondo, inputs, tablas, badges. La separación es por borde y color de superficie.</div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">shadow-sm</div>
+            <div class="spec-val"><strong>0 1px 3px rgba(15,18,23,0.08)</strong><br>Para tarjetas que necesitan levantarse levemente del fondo en la landing. El color de sombra usa el Primary (0F1217) para mantener temperatura cálida.</div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">shadow-md</div>
+            <div class="spec-val"><strong>0 4px 16px rgba(15,18,23,0.12)</strong><br>Para dropdowns, tooltips y elementos que aparecen sobre el contenido durante una interacción. Solo mientras el elemento está activo/abierto.</div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">shadow-lg</div>
+            <div class="spec-val"><strong>0 8px 32px rgba(15,18,23,0.16)</strong><br>Exclusivamente para modales y drawers. La sombra grande indica que el elemento bloquea toda interacción con el fondo.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 08 ICONOGRAFÍA -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">08</span><h2 class="sec-title">Iconografía</h2></div>
+        <div class="spec-grid">
+          <div class="spec-cell">
+            <div class="spec-lbl">Librería</div>
+            <div class="spec-val"><strong>Phosphor Icons</strong> — Open source, 1400+ iconos, múltiples pesos (thin, light, regular, bold, fill, duotone). La consistencia de trazo y el coverage de categorías de negocio (finanzas, inventario, usuarios) lo hacen ideal para un POS.</div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">Pesos a usar</div>
+            <div class="spec-val">
+              <strong>Regular:</strong> Navegación, listas, contenido informativo<br>
+              <strong>Bold:</strong> CTAs, alertas, estados críticos<br>
+              <strong>Fill:</strong> Estados activos/seleccionados, éxito, confirmación<br>
+              <strong>Duotone:</strong> Prohibido — demasiado decorativo
+            </div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">Tamaños</div>
+            <div class="spec-val">
+              <strong>16px:</strong> Inline con texto, labels de tabla<br>
+              <strong>20px:</strong> Botones, navegación, inputs<br>
+              <strong>24px:</strong> Feature icons, cards de funcionalidad<br>
+              <strong>32px:</strong> Landing sections, ilustraciones de proceso<br>
+              <strong>48px:</strong> Landing hero, sección de funciones (máximo)
+            </div>
+          </div>
+          <div class="spec-cell">
+            <div class="spec-lbl">Reglas de uso</div>
+            <div class="spec-val">
+              — Siempre el mismo color que el texto adyacente<br>
+              — Nunca decorativos sin función comunicativa<br>
+              — En la landing: máximo 1 icono por feature, sin icono si no añade claridad<br>
+              — Los semáforos de cuadre usan color propio (verde/ámbar/rojo), no el sistema general
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 09 ILUSTRACIONES -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">09</span><h2 class="sec-title">Ilustraciones</h2></div>
+        <div class="style-row">
+          <div class="style-row-title">Filosofía: Capturas reales sobre ilustración generada</div>
+          <div class="style-row-desc">El activo visual más poderoso de MypiCuadre son las capturas reales de la app. En una landing donde la credibilidad es crítica, un mockup fotográfico de la interfaz real sobre un teléfono Android real convence más que cualquier ilustración. Las ilustraciones decorativas genéricas están prohibidas.</div>
+        </div>
+        <div class="style-row">
+          <div class="style-row-title">Si se requiere ilustración: estilo lineal mínimo</div>
+          <div class="style-row-desc">Para casos donde una ilustración sea necesaria (proceso de instalación, diagrama explicativo), usar línea fina (1.5px), color único del sistema (#0F1217 o #C8622A), sin rellenos. Nunca degradados, nunca isométrico 3D, nunca "flat design colorido". Estilo: como un diagrama técnico con sensibilidad artística.</div>
+        </div>
+        <div class="style-row">
+          <div class="style-row-title">Mockups de app — Reglas de presentación</div>
+          <div class="style-row-desc">Las capturas de pantalla se presentan dentro de un marco de teléfono Android genérico, no un iPhone. El marco es mínimo: bordes redondeados, sin marcas de fabricante. Siempre con datos reales (no "Lorem ipsum" ni cantidades ficticias evidentes). El contexto importa: mostrar la pantalla de cuadre con un ✅ verde es más poderoso que cualquier headline.</div>
+        </div>
+        <div class="style-row">
+          <div class="style-row-title">Elementos de datos como ilustración</div>
+          <div class="style-row-desc">Los propios elementos de datos de la app (el semáforo de cuadre, la tabla de ventas, el contador de stock) pueden funcionar como "ilustraciones" en la landing. Son más honestos y más convincentes que ilustraciones abstractas. Priorizarlos siempre.</div>
+        </div>
+      </div>
+
+      <!-- 10 FOTOGRAFÍA -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">10</span><h2 class="sec-title">Fotografía</h2></div>
+        <div class="style-row">
+          <div class="style-row-title">Estilo: Documental auténtico</div>
+          <div class="style-row-desc">Fotografías reales de negocios cubanos reales — bodegas, cafeterías, puntos de venta. No stock photography de modelos en oficinas. No imágenes de personas mirando cámaras con sonrisas perfectas. La autenticidad del contexto cubano es un diferenciador visual poderoso.</div>
+        </div>
+        <div class="style-row">
+          <div class="style-row-title">Tratamiento de color</div>
+          <div class="style-row-desc">Tono cálido consistente con la paleta del sistema. Ligero desaturado para integrarse sin competir con los colores de la interfaz. Nunca filtros Instagram ni tratamientos de moda. El objetivo es que la foto parezca tomada hoy en Cuba, no procesada en un editor.</div>
+        </div>
+        <div class="style-row">
+          <div class="style-row-title">Composición</div>
+          <div class="style-row-desc">Siempre incluir el teléfono con la app en uso cuando sea posible. Mostrar el contexto: una bodega real, manos reales, un vendedor real. Las manos usando la app son más persuasivas que cualquier imagen de producto aislado. Evitar imágenes genéricas de "tecnología".</div>
+        </div>
+        <div class="style-row">
+          <div class="style-row-title">Fotografía de personas</div>
+          <div class="style-row-desc">Representar el perfil real del buyer persona: 30–55 años, cubanos, en su negocio. Diversidad de género. Expresiones naturales — concentración, satisfacción al ver que cuadra la caja. No felicidad forzada ni actitudes corporativas.</div>
+        </div>
+      </div>
+
+      <!-- 11 COMPONENTES BASE -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">11</span><h2 class="sec-title">Reglas Visuales de Componentes Base</h2></div>
+        <table class="comp-table">
+          <thead>
+            <tr>
+              <th>Componente</th>
+              <th>Reglas visuales</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Botones</td>
+              <td><strong>Primario:</strong> fondo #C8622A (terracota), texto blanco, radius-full (100px), peso 600, 48px altura mínima (hit target Android). Solo uno visible por pantalla/sección. <strong>Secundario:</strong> fondo #0F1217, texto #F5F2EE, radius-2 (4px). <strong>Ghost:</strong> sin fondo, borde 1.5px #0F1217, texto #0F1217. <strong>Tamaño:</strong> nunca menos de 44px de altura en mobile. Nunca más de 2 variantes en pantalla simultáneamente.</td>
+            </tr>
+            <tr>
+              <td>Tarjetas</td>
+              <td>Fondo #FFFFFF sobre background #F7F4F0. Borde 1px #E2DDD7. Radius-3 (6px). Padding 24px. Sombra shadow-sm únicamente en landing — en la app, sin sombra, solo borde. Hover: border-color #C8C2BA, transición 150ms ease-out. Sin gradientes, sin overlays de color.</td>
+            </tr>
+            <tr>
+              <td>Badges</td>
+              <td>Radius-1 (2px). Padding 2px 8px. Fuente: Plus Jakarta Sans, 11–12px, peso 700. <strong>Success:</strong> fondo #EAF2EC, texto #2A6B3C. <strong>Warning:</strong> fondo #F5EDD4, texto #B07D10. <strong>Error:</strong> fondo #FAECEC, texto #B03030. <strong>Neutro:</strong> fondo #ECEAE5, texto #555. Nunca usar color de fondo sólido oscuro en badges — siempre el tint claro.</td>
+            </tr>
+            <tr>
+              <td>Inputs</td>
+              <td>Altura 48px (mobile-first). Fondo #FFFFFF. Borde 1px #E2DDD7. Radius-2 (4px). Fuente: Plus Jakarta Sans 15px, peso 400. Label: encima del input, 12px, peso 600, tracking +0.04em. Focus: borde 2px #0F1217. Error: borde 1.5px #B03030 + mensaje de error en #B03030 debajo. Los campos de cantidades monetarias usan JetBrains Mono y alineación a la derecha.</td>
+            </tr>
+            <tr>
+              <td>Tablas</td>
+              <td>Sin fondo de header de tabla alternativo llamativo — header con borde-bottom 1.5px y texto 11px uppercase en #B0AAA4. Filas: fondo alternado #FFFFFF / #F7F4F0 para mejorar scannability. Borde-bottom 1px #ECEAE5 entre filas. Números/cantidades: JetBrains Mono, alineados a la derecha. Text labels: alineados a la izquierda. Hover de fila: fondo #F0EDE8.</td>
+            </tr>
+            <tr>
+              <td>Modales</td>
+              <td>Overlay: rgba(15,18,23,0.6) backdrop-blur(4px). Panel: fondo #FFFFFF, radius-3 (6px), shadow-lg, max-width 480px, padding 32px. Header del modal: título en Bricolage Grotesque 20px peso 700 + botón de cierre. Footer: siempre 2 acciones máximo — primaria y cancelar. Entrada: slide-up desde abajo en mobile (más natural en táctil), fade+scale en desktop.</td>
+            </tr>
+            <tr>
+              <td>FAQ</td>
+              <td>Patrón accordion. Pregunta: Plus Jakarta Sans 15px peso 600, color #0F1217, padding 20px 0. Ícono: chevron Phosphor Bold, rotación 0→180° en 200ms. Respuesta: Plus Jakarta Sans 15px peso 400, color #2A2520, line-height 1.7, padding 0 0 20px 0. Separador: borde-bottom 1px #E2DDD7. Sin fondo especial para el item abierto — solo el espacio de la respuesta visible.</td>
+            </tr>
+            <tr>
+              <td>CTA Sections</td>
+              <td>Sección con fondo #0F1217 (Primary dark). Texto blanco. Máximo: 1 headline, 1 subheadline, 1 botón primario (terracota), 1 acción secundaria (ghost blanco). Padding 80px vertical. El CTA secundario (WhatsApp) usa el verde de WhatsApp (#25D366) únicamente en este contexto — es una excepción justificada por el reconocimiento universal del color.</td>
+            </tr>
+            <tr>
+              <td>Navbar</td>
+              <td>Fondo #FAFAF8 (no blanco puro). Borde-bottom 1px #E2DDD7. Altura 64px desktop / 56px mobile. Logo a la izquierda. CTA "Instalar" a la derecha, versión compacta del botón primario. En scroll: agregar shadow-sm para indicar elevación. Sticky en todas las pantallas. En mobile: sin items de navegación intermedios — solo logo y CTA.</td>
+            </tr>
+            <tr>
+              <td>Footer</td>
+              <td>Fondo #0F1217 (dark). Texto #F5F2EE para primario, #888 para secundario. Padding 64px vertical. Grid de 3 columnas en desktop. Stack simple en mobile. Sin colores de acento — entorno monocromático. Incluir el disclaimer honesto de limitaciones (sin iOS nativo, sin facturación fiscal) en texto pequeño. El footer cierra la landing con seriedad, no con alegría.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 12 RESPONSIVE -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">12</span><h2 class="sec-title">Sistema Responsive</h2></div>
+        <p><strong>Estrategia: Mobile-First.</strong> El visitante mayoritario llega desde un smartphone Android. Se diseña primero para 390px y se expande hacia escritorio. Nunca al revés.</p>
+        <div class="bp-track">
+          <div class="bp-row">
+            <div class="bp-label">
+              <div class="bp-name">Mobile</div>
+              <div class="bp-range">320 – 767px</div>
+            </div>
+            <div class="bp-specs">
+              <ul class="bp-spec-list">
+                <li>Una sola columna. Todo en stack vertical.</li>
+                <li>Padding horizontal: 20px fijo (nunca menos).</li>
+                <li>Tipografía: H1 28px / H2 22px / Body 15px.</li>
+                <li>Botones: ancho 100% (full-width). Altura mínima 52px.</li>
+                <li>Navbar: solo logo + CTA. Sin items de menú visibles.</li>
+                <li>CTA sticky en barra inferior fija (bottom bar) para el botón de instalación.</li>
+                <li>Imágenes de app: ancho 100%, bordes redondeados.</li>
+                <li>FAQ: accordion ocupando ancho completo.</li>
+                <li>Tablas de precios: cards apiladas, no grid horizontal.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="bp-row">
+            <div class="bp-label">
+              <div class="bp-name">Tablet</div>
+              <div class="bp-range">768 – 1199px</div>
+            </div>
+            <div class="bp-specs">
+              <ul class="bp-spec-list">
+                <li>Grid de 2 columnas para features, funciones y beneficios.</li>
+                <li>Padding horizontal: 48px.</li>
+                <li>Tipografía: H1 34px / H2 26px / Body 15px.</li>
+                <li>Navbar: puede mostrar 2–3 anchor links además del CTA.</li>
+                <li>Cards de precios: grid 2+1 (o 3 en fila si caben).</li>
+                <li>Hero: headline y visual lado a lado si el ancho lo permite.</li>
+                <li>Bottom bar desaparece — el CTA está en navbar sticky.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="bp-row">
+            <div class="bp-label">
+              <div class="bp-name">Desktop</div>
+              <div class="bp-range">1200px+</div>
+            </div>
+            <div class="bp-specs">
+              <ul class="bp-spec-list">
+                <li>Max-width de contenido: 1200px centrado. Sin estirar el layout más allá.</li>
+                <li>Grid de 3 columnas para features. 2 columnas para hero (texto + visual).</li>
+                <li>Padding horizontal: 80px en contenedor principal.</li>
+                <li>Tipografía: H1 48px / H2 32px / Body 16px.</li>
+                <li>FAQ en 2 columnas lado a lado (preguntas y respuestas).</li>
+                <li>Navbar completa con anchor links y CTA primario.</li>
+                <li>Secciones con mayor breathing room — padding vertical 96px.</li>
+                <li>El botón de WhatsApp flotante se mueve a la esquina inferior derecha.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13 ACCESIBILIDAD -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">13</span><h2 class="sec-title">Accesibilidad — Cumplimiento WCAG 2.1</h2></div>
+        <p><strong>Nivel objetivo: WCAG 2.1 AA.</strong> Dado que el público objetivo usa smartphones de gama media con pantallas de calidad variable, el cumplimiento de contraste y tamaño mínimo no es solo una obligación de accesibilidad — es una necesidad funcional del producto.</p>
+        <div class="wcag-grid">
+          <div class="wcag-cell">
+            <div class="wcag-lbl">Contraste de color</div>
+            <div class="wcag-badge aa">AA</div>
+            <div class="wcag-val"><strong>#0F1217 sobre #F7F4F0:</strong> ratio ~17:1 ✓ AAA<br><strong>#2A2520 sobre #F7F4F0:</strong> ratio ~12:1 ✓ AAA<br><strong>#FFFFFF sobre #C8622A:</strong> ratio ~4.6:1 ✓ AA<br><strong>#6B6560 sobre #F7F4F0:</strong> ratio ~5.2:1 ✓ AA<br>Verificar siempre con herramienta antes de producción.</div>
+          </div>
+          <div class="wcag-cell">
+            <div class="wcag-lbl">Tamaños mínimos</div>
+            <div class="wcag-badge aa">AA</div>
+            <div class="wcag-val">Texto corrido: mínimo 16px desktop, 15px mobile.<br>Labels: mínimo 12px con peso 600+.<br>Hit targets táctiles: mínimo 44×44px (Google recomend. 48×48px).<br>Botones: mínimo 48px de altura.<br>Iconos solos (sin label): mínimo 24px con tooltip.</div>
+          </div>
+          <div class="wcag-cell">
+            <div class="wcag-lbl">Foco y navegación por teclado</div>
+            <div class="wcag-badge aa">AA</div>
+            <div class="wcag-val">Todos los elementos interactivos tienen outline visible en focus: 2px solid #0F1217 con offset 2px. Nunca outline:none sin reemplazo. Tab order lógico (top→bottom, left→right). Skip link al contenido principal en desktop.</div>
+          </div>
+          <div class="wcag-cell">
+            <div class="wcag-lbl">Semáforos y estados cromáticos</div>
+            <div class="wcag-badge aa">AA</div>
+            <div class="wcag-val">El semáforo de cuadre (🟢🟡🔴) nunca comunica estado solo por color. Siempre incluir: icono de forma distinta (✓ / △ / ✕), texto de estado ("Cuadrado" / "Revisar" / "Diferencia") y color. Usuarios con daltonismo deben poder leer el estado sin depender del hue.</div>
+          </div>
+          <div class="wcag-cell">
+            <div class="wcag-lbl">Textos alternativos e ARIA</div>
+            <div class="wcag-badge aa">AA</div>
+            <div class="wcag-val">Todas las imágenes con alt descriptivo. Iconos decorativos: aria-hidden="true". Iconos funcionales: aria-label con la acción. Accordions FAQ: uso de aria-expanded. Modales: aria-modal + foco atrapado dentro mientras está abierto.</div>
+          </div>
+          <div class="wcag-cell">
+            <div class="wcag-lbl">Animaciones</div>
+            <div class="wcag-badge aa">AA</div>
+            <div class="wcag-val">Respetar prefers-reduced-motion. Todas las animaciones no esenciales se desactivan si el usuario lo solicita en su sistema. Las transiciones de estado (focus, hover, open) se mantienen incluso con reduced-motion — son funcionales, no decorativas.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14 MOTION DESIGN -->
+      <div class="section">
+        <div class="sec-hdr"><span class="sec-num">14</span><h2 class="sec-title">Motion Design</h2></div>
+        <p><strong>Filosofía: Invisible pero funcional.</strong> Las animaciones en MypiCuadre no existen para impresionar — existen para comunicar estado, confirmar acciones y guiar la atención. Si el visitante nota la animación, es demasiado. Si no la nota pero se siente más seguro de lo que acaba de hacer, funciona correctamente.</p>
+        <div class="motion-row"><span class="motion-type">Duración base</span><span class="motion-spec"><strong>150ms</strong> para micro-interacciones (hover, focus). <strong>200ms</strong> para transiciones de estado (open/close de dropdown, badge change). <strong>300ms</strong> para entradas de componentes (modal, drawer). <strong>400ms</strong> para transiciones de sección (scroll-triggered reveals). Nunca más de 400ms para cualquier animación en la interfaz.</span></div>
+        <div class="motion-row"><span class="motion-type">Easing</span><span class="motion-spec"><strong>Entradas:</strong> cubic-bezier(0.0, 0.0, 0.2, 1.0) — ease-out. Comienza rápido, frena suavemente. Comunica que algo llegó con decisión. <strong>Salidas:</strong> cubic-bezier(0.4, 0.0, 1.0, 1.0) — ease-in. Acelera hacia afuera. Comunica que algo se fue sin dudar. <strong>Estados de énfasis:</strong> cubic-bezier(0.4, 0.0, 0.2, 1.0) — ease-in-out. Para cambios de estado que no son entradas ni salidas.</span></div>
+        <div class="motion-row"><span class="motion-type">Hover / Focus</span><span class="motion-spec">Cambio de color de borde: 150ms ease-out. Elevación de tarjeta (si aplica): 150ms. Nunca escalar (transform: scale) en hover de elementos de la landing — es un tropo de 2018. El cambio de color es suficiente y más legible en pantallas de baja resolución.</span></div>
+        <div class="motion-row"><span class="motion-type">Semáforo de cuadre</span><span class="motion-spec">El cambio de color del semáforo (verde/ámbar/rojo) usa una transición de 300ms con easing ease-in-out. Es el momento más importante de la interfaz de la app — merece atención pero no espectáculo. Acompañar con un micro-sonido opcional (del OS) para usuarios con visión reducida.</span></div>
+        <div class="motion-row"><span class="motion-type">Scroll-triggered (landing)</span><span class="motion-spec">Fade-up: opacity 0→1 + transform translateY(16px)→(0) en 400ms ease-out. Solo para bloques de contenido significativos (cards de funciones, testimonios). No animar texto corrido ni elementos pequeños. El threshold de activación: 20% del elemento visible. Sin parallax — costoso en dispositivos de gama baja.</span></div>
+        <div class="motion-row"><span class="motion-type">Loading / Skeleton</span><span class="motion-spec">Para estados de carga: skeleton screens con animación de shimmer — gradiente que recorre el elemento de izquierda a derecha en 1.5s, loop infinito con ease-in-out. Usar el color #E2DDD7 como base y #F0EDE8 como highlight del shimmer. Nunca spinners genéricos — el skeleton da contexto de qué está cargando.</span></div>
+        <div class="motion-row"><span class="motion-type">Prohibido</span><span class="motion-spec">Bounce (cubic-bezier elástico). Parallax en imágenes de fondo. Animaciones de más de 500ms. Texto que se escribe solo (typewriter). Particles o efectos de partículas. Carruseles con auto-play. Cualquier animación que consuma CPU significativa en hardware móvil de gama baja.</span></div>
+      </div>
+
+    </td></tr></tbody>
+    <tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+  </table>
+</main>
+</x-dc>
+<script>
+(async () => {
+  if (!document.title || !document.title.trim()) document.title = "MypiCuadre - Design System Foundation";
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    print-color-adjust: exact; -webkit-print-color-adjust: exact;\n    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  // Project support.js may predate runtime default-seeding; push via bridge.
+  if (isDc && window.__dcSetProps && window.__dcRootName) {
+    try {
+      const dpEl = document.querySelector('script[data-dc-script]');
+      const meta = JSON.parse((dpEl && dpEl.getAttribute('data-props')) || '{}');
+      const bag = {};
+      for (const k in meta)
+        if (k[0] !== '$' && meta[k] && meta[k].default !== undefined)
+          bag[k] = meta[k].default;
+      if (Object.keys(bag).length) {
+        window.__dcSetProps(window.__dcRootName(), bag);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    } catch (e) {}
+  }
+  // Reveal content gated on scroll or visibility before printing. Lazy <img>,
+  // IntersectionObserver fade-ins, and collapsed <details> don't render while
+  // off-screen, so a long page would print with them blank or closed. Open
+  // every <details>, force native-lazy images eager, and scroll the document
+  // through its full height to trip lazy-load + IO; then wait (bounded) for the
+  // newly-triggered images. Inert for deck-stage (slides aren't scroll-gated).
+  try {
+    for (const d of document.querySelectorAll('details')) d.open = true;
+    for (const img of document.querySelectorAll('img[loading="lazy"]'))
+      img.loading = 'eager';
+    const scroller = document.scrollingElement || document.documentElement;
+    const full = Math.max(scroller.scrollHeight, document.body.scrollHeight);
+    const step = window.innerHeight || 800;
+    for (let y = 0; y <= full; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, 0);
+    await Promise.race([
+      Promise.all(
+        [...document.images].map((img) =>
+          img.complete
+            ? null
+            : new Promise((res) => {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+              })
+        )
+      ),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
+  } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  // Re-append deck-stage's @page last so no author @page can add a margin and
+  // spill each full-bleed slide onto two sheets. Backstop for old copies.
+  if (ds) {
+    let pg = document.getElementById('deck-stage-print-page');
+    if (!pg) {
+      pg = document.createElement('style');
+      pg.textContent = '@page{size:' + (+ds.getAttribute('width') || 1920) +
+        'px ' + (+ds.getAttribute('height') || 1080) + 'px;margin:0}';
+    }
+    document.body.appendChild(pg);
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  // Size the PDF page to the rendered design unless the file opted into
+  // standard paper via @page{size:letter|A4|…}. Decks own their own @page.
+  // Wrappers (body, …) lose padding+margin so the frame sits at (0,0); the
+  // frame itself loses only margin — its padding is INSIDE the measured
+  // rect and must stay, or content shifts and leaves a gap at bottom/right.
+  var __m = null;
+  try { __m = (() => {
+  var docEl = document.documentElement;
+  var doc = { width: docEl.scrollWidth, height: docEl.scrollHeight };
+
+  var ds = document.querySelector('deck-stage');
+  if (ds) {
+    var dw = Number(ds.getAttribute('width')) || 1920;
+    var dh = Number(ds.getAttribute('height')) || 1080;
+    var n = typeof ds.length === 'number' ? ds.length : ds.children.length;
+    var idx = typeof ds.index === 'number' ? ds.index : 0;
+    var frames = [];
+    for (var i = 0; i < n; i++) frames.push({ left: 0, top: 0, width: dw, height: dh });
+    return { kind: 'deck', doc: doc, frames: frames,
+      authored: frames.map(function(){return{width:true,height:true}}),
+      deck: { width: dw, height: dh, slideCount: n, index: idx },
+      signals: { paperPage: false, pxPage: false } };
+  }
+
+  var paperPage = false, pxPage = false;
+  var eachRule = function (fn) {
+    for (var s = 0; s < document.styleSheets.length; s++) {
+      var rs; try { rs = document.styleSheets[s].cssRules; } catch (e) { continue; }
+      for (var r = 0; r < rs.length; r++) {
+        fn(rs[r]);
+        if (rs[r].cssRules) for (var n = 0; n < rs[r].cssRules.length; n++) fn(rs[r].cssRules[n]);
+      }
+    }
+  };
+  eachRule(function (r) {
+    if (r.type !== 6) return;
+    var m = /\bsize\s*:\s*([^;}]+)/i.exec(r.cssText || '');
+    if (!m) return;
+    if (/\b(letter|a[3-5]|legal|ledger)\b/i.test(m[1])) paperPage = true;
+    if (/\d+(?:\.\d+)?px\b/i.test(m[1])) pxPage = true;
+  });
+  var signals = { paperPage: paperPage, pxPage: pxPage };
+
+  var pxVal = function (v) {
+    var m = /^(\d+(?:\.\d+)?)px$/.exec(v || ''); return m ? +m[1] : 0;
+  };
+  var authoredPx = function (el, prop) {
+    if (pxVal(el.style[prop])) return true;
+    var attr = el.getAttribute(prop);
+    if (attr && /^\d+$/.test(attr)) return true;
+    var hit = false;
+    eachRule(function (r) {
+      if (hit || r.type !== 1 || !r.style) return;
+      try { if (el.matches(r.selectorText) && pxVal(r.style[prop])) hit = true; } catch (e) {}
+    });
+    return hit;
+  };
+
+  var el = document.body, rootPxW = false;
+  for (;;) {
+    var kids = [];
+    for (var c = 0; c < el.children.length; c++) {
+      var t = el.children[c].tagName;
+      if (t !== 'SCRIPT' && t !== 'STYLE' && t !== 'TEMPLATE') kids.push(el.children[c]);
+    }
+    if (kids.length !== 1 || !(kids[0] instanceof HTMLElement)) break;
+    el.setAttribute('data-om-frame-wrap', '');
+    el = kids[0];
+    rootPxW = authoredPx(el, 'width');
+    if (rootPxW) break;
+  }
+  if (!rootPxW) rootPxW = authoredPx(el, 'width');
+
+  // @page{size:letter} alone is a flowing doc; with a px-width root it's a
+  // fixed sheet pretending to be paper — fall through and size to render.
+  if (paperPage && !rootPxW) {
+    return { kind: 'paper-doc', doc: doc, signals: signals,
+      frames: [{ left: 0, top: 0, width: doc.width, height: doc.height }],
+      authored: [{ width: false, height: false }] };
+  }
+
+  var sx = window.scrollX || 0, sy = window.scrollY || 0;
+  var rectOf = function (e) {
+    var r = e.getBoundingClientRect();
+    var oy; try { oy = getComputedStyle(e).overflowY; } catch (err) {}
+    var h = oy === 'visible' ? Math.max(r.height, e.scrollHeight || 0) : r.height;
+    return { left: r.left + sx, top: r.top + sy, width: r.width, height: h };
+  };
+
+  // Multi-frame: ≥2 visible non-fixed children, each with authored px width
+  // AND height, all within ±2px of each other. Off unless the page opts in
+  // via data-om-multi-frame on the stop element — guards against card grids
+  // and pricing tables that match the geometry but aren't separate canvases.
+  if (el.hasAttribute('data-om-multi-frame')) {
+    var cands = [];
+    for (var k = 0; k < el.children.length; k++) {
+      var ch = el.children[k];
+      var cs; try { cs = getComputedStyle(ch); } catch (e) { continue; }
+      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.position === 'fixed') continue;
+      var rc = rectOf(ch);
+      if (rc.width < 2 || rc.height < 2) continue;
+      if (!authoredPx(ch, 'width') || !authoredPx(ch, 'height')) continue;
+      cands.push(rc);
+    }
+    if (cands.length >= 2) {
+      var w0 = cands[0].width, h0 = cands[0].height, ok = true;
+      for (var q = 1; q < cands.length; q++)
+        if (Math.abs(cands[q].width - w0) > 2 || Math.abs(cands[q].height - h0) > 2) ok = false;
+      if (ok) return { kind: 'multi-frame', doc: doc, signals: signals,
+        frames: cands, authored: cands.map(function(){return{width:true,height:true}}) };
+    }
+  }
+
+  el.setAttribute('data-om-frame', '');
+  return { kind: 'single-canvas', doc: doc, signals: signals,
+    frames: [rectOf(el)],
+    authored: [{ width: rootPxW, height: authoredPx(el, 'height') }] };
+})(); } catch (e) {}
+  var frame = null;
+  if (__m && __m.kind === 'single-canvas') {
+    var f = __m.frames && __m.frames[0];
+    if (f && f.width >= 200 && f.height >= 200) {
+      frame = f;
+      var fst = document.createElement('style');
+      fst.textContent = '@media print{@page{size:' + Math.ceil(f.width) + 'px ' +
+        Math.ceil(f.height) + 'px;margin:0}' +
+        'html,body,[data-om-frame-wrap]{padding:0!important;margin:0!important;background:none!important}' +
+        '[data-om-frame]{margin:0!important}}';
+      document.body.appendChild(fst);
+    }
+  }
+  // Relax break-inside on oversized elements. An element taller than a
+  // printable page can't honor break-inside: avoid — browsers either overflow
+  // it or push it whole to the next page, leaving a blank gap, then break it
+  // anyway at an arbitrary point. After the final layout (content revealed,
+  // animations jumped), find elements taller than a page that still compute
+  // break-inside: avoid and reset them to auto, so the browser breaks them at
+  // their children's boundaries instead (children keep their own avoid). PAGE_PX
+  // is a conservative portrait estimate at 96 CSS px/in — Letter/A4 usable
+  // height minus our 0.5in margins — so only clearly-oversized elements are
+  // touched and under-page elements still stay whole. Skipped for decks (slides
+  // are sized to the page) and for fixed-size canvases (frame set, or an author
+  // px-based @page) — runs as before for flowing docs on letter/A4.
+  try {
+    if (!ds && !frame && !(__m && __m.signals && __m.signals.pxPage)) {
+      const PAGE_PX = 1024;
+      // Our print defaults add a real @page margin only when the source has
+      // no @page of its own; computed style can't tell us (it reports screen
+      // media), so read the injected rule directly.
+      const defaults = document.querySelector('style[data-omelette-print-defaults]');
+      const pageInset = /@page\s*\{[^}]*margin/.test(defaults ? defaults.textContent || '' : '');
+      const SEL = 'section,article,figure,table,pre,blockquote,[class~="card" i],[class~="page" i],[class~="sheet" i]';
+      for (const el of document.body.querySelectorAll(SEL)) {
+        if (el instanceof HTMLElement && el.offsetHeight > PAGE_PX) {
+          el.setAttribute('data-om-oversized', '');
+          // Fake-paged docs simulate sheets with over-tall break-after:page
+          // boxes; honoring the break spills half-blank pages and ends a
+          // colored box mid-sheet. Flow them, and (only when we own the page
+          // inset) drop the redundant padding/background via the rule below.
+          const cs = getComputedStyle(el);
+          if (cs.breakAfter === 'page' || cs.pageBreakAfter === 'always') {
+            el.setAttribute('data-om-fakepage', '');
+          }
+        }
+      }
+      const ost = document.createElement('style');
+      ost.textContent = '@media print{' +
+        '[data-om-oversized]{break-inside:auto !important;page-break-inside:auto !important}' +
+        '[data-om-fakepage]{break-after:auto !important;page-break-after:auto !important}' +
+        (pageInset ? '[data-om-fakepage]{padding:0 !important;background:none !important}' : '') +
+        '}';
+      document.head.appendChild(ost);
+    }
+  } catch (e) {}
+  // macOS Preview renders Skia-PDF Luminosity soft-masks as opaque grey boxes;
+  // swap the CSS that triggers them for Preview-safe forms.
+  try {
+    for (const el of document.body.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+
+      if (cs.boxShadow !== 'none' && cs.filter === 'none') {
+        const outs = [], kept = [];
+        for (const s of cs.boxShadow.split(/,(?![^(]*[)])/)) {
+          const t = s.trim();
+          const m = t.match(/^(rgba?[(][^)]+[)]) (-?[0-9.]+px) (-?[0-9.]+px) ([0-9.]+px) -?[0-9.]+px$/);
+          if (m && parseFloat(m[4]) > 0) outs.push('drop-shadow(' + m[2] + ' ' + m[3] + ' ' + m[4] + ' ' + m[1] + ')');
+          else kept.push(t);
+        }
+        if (outs.length) {
+          el.style.setProperty('filter', outs.join(' '), 'important');
+          el.style.setProperty('box-shadow', kept.join(', ') || 'none', 'important');
+        }
+      }
+
+      const mask = cs.maskImage && cs.maskImage !== 'none' ? cs.maskImage : cs.webkitMaskImage;
+      if (mask && mask !== 'none' && cs.filter === 'none') el.style.setProperty('filter', 'opacity(1)', 'important');
+    }
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>

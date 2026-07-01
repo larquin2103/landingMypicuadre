@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style data-omelette-print-defaults>
+@media print {
+  h1, h2, h3, h4, h5, h6 { break-after: avoid; }
+  figure, table, pre, blockquote, img, svg, tr, [class~="card" i] { break-inside: avoid; }
+  img, svg { max-width: 100%; }
+  p { orphans: 3; widows: 3; }
+}
+</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; background: #F5F4F1; font-family: 'IBM Plex Sans', sans-serif; color: #1A1A1A; }
+
+    .doc {
+      max-width: 8.5in;
+      margin: 0 auto;
+      background: #FAFAF8;
+      padding: 64px clamp(24px, 5vw, 0.85in) 96px;
+    }
+
+    .doc-frame { width: 100%; border-collapse: collapse; }
+    .doc-frame td { padding: 0; }
+    .hdr-space, .ftr-space { display: none; }
+
+    /* Cover */
+    .cover {
+      border-bottom: 3px solid #1A1A1A;
+      padding-bottom: 40px;
+      margin-bottom: 56px;
+    }
+    .cover-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888;
+      margin: 0 0 20px 0;
+    }
+    .cover h1 {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.02em;
+    }
+    .cover-sub {
+      font-size: 18px;
+      font-weight: 300;
+      color: #555;
+      margin: 0 0 32px 0;
+    }
+    .cover-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #999; }
+    .meta-value { font-size: 13px; font-weight: 500; color: #333; }
+
+    /* Sections */
+    .section {
+      margin-bottom: 56px;
+      break-inside: avoid-page;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid #E0DED8;
+    }
+    .section-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: #B0AEA8;
+      min-width: 28px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #555;
+      margin: 0;
+    }
+
+    /* Body text */
+    p { font-size: 14.5px; line-height: 1.7; margin: 0 0 14px 0; color: #2A2A2A; text-wrap: pretty; }
+    p:last-child { margin-bottom: 0; }
+
+    /* UVP highlight */
+    .uvp-block {
+      background: #1A1A1A;
+      color: #F5F4F1;
+      padding: 28px 32px;
+      border-radius: 4px;
+      margin: 0;
+    }
+    .uvp-block p {
+      font-size: 17px;
+      font-weight: 500;
+      line-height: 1.55;
+      color: #F5F4F1;
+      margin: 0;
+    }
+
+    /* Lists */
+    ul, ol { margin: 0 0 14px 0; padding-left: 20px; }
+    ul:last-child, ol:last-child { margin-bottom: 0; }
+    li { font-size: 14.5px; line-height: 1.65; color: #2A2A2A; margin-bottom: 5px; }
+    li strong { font-weight: 600; color: #1A1A1A; }
+
+    /* Definition grid */
+    .def-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin: 0; }
+    .def-cell {
+      background: #F0EDE8;
+      padding: 16px 18px;
+    }
+    .def-cell:first-child { border-radius: 4px 0 0 0; }
+    .def-cell:nth-child(2) { border-radius: 0 4px 0 0; }
+    .def-cell:nth-last-child(2) { border-radius: 0 0 0 4px; }
+    .def-cell:last-child { border-radius: 0 0 4px 0; }
+    .def-cell-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+    .def-cell p { font-size: 13.5px; margin: 0; line-height: 1.55; }
+
+    /* Persona cards */
+    .persona-card {
+      background: #F0EDE8;
+      border-radius: 4px;
+      padding: 22px 24px;
+      margin-bottom: 12px;
+      break-inside: avoid;
+    }
+    .persona-card:last-child { margin-bottom: 0; }
+    .persona-name { font-size: 15px; font-weight: 700; margin: 0 0 2px 0; color: #1A1A1A; }
+    .persona-role { font-size: 12px; font-weight: 500; color: #888; margin: 0 0 14px 0; letter-spacing: 0.04em; }
+    .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .persona-field-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA; margin-bottom: 4px; }
+    .persona-field-value { font-size: 13px; line-height: 1.55; color: #2A2A2A; }
+
+    /* JTBD items */
+    .jtbd-item {
+      border-left: 3px solid #1A1A1A;
+      padding: 10px 0 10px 16px;
+      margin-bottom: 10px;
+    }
+    .jtbd-item:last-child { margin-bottom: 0; }
+    .jtbd-item p { font-size: 14px; line-height: 1.6; font-style: italic; margin: 0; }
+
+    /* Objection table */
+    .obj-table { width: 100%; border-collapse: collapse; margin: 0; }
+    .obj-table tr { border-bottom: 1px solid #E0DED8; break-inside: avoid; }
+    .obj-table tr:last-child { border-bottom: none; }
+    .obj-table td { padding: 14px 0; font-size: 13.5px; line-height: 1.6; vertical-align: top; }
+    .obj-table td:first-child { font-weight: 600; color: #1A1A1A; width: 38%; padding-right: 24px; }
+    .obj-table td:last-child { color: #3A3A3A; }
+
+    /* Word lists */
+    .word-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .word-tag {
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 100px;
+      line-height: 1;
+    }
+    .word-tag.use { background: #E8F0E4; color: #2A5C1E; }
+    .word-tag.avoid { background: #F5E8E8; color: #6B2020; text-decoration: line-through; text-decoration-color: #C07070; }
+
+    /* Messages */
+    .message-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid #E8E6E1;
+      break-inside: avoid;
+    }
+    .message-item:last-child { border-bottom: none; }
+    .msg-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: #CCC;
+      padding-top: 3px;
+      min-width: 24px;
+    }
+    .msg-text { font-size: 15px; font-weight: 500; line-height: 1.5; color: #1A1A1A; }
+
+    /* Benefit columns */
+    .benefit-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2px; }
+    .benefit-col { background: #F0EDE8; padding: 20px; }
+    .benefit-col:first-child { border-radius: 4px 0 0 4px; }
+    .benefit-col:last-child { border-radius: 0 4px 4px 0; }
+    .benefit-col-title { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 14px; }
+    .benefit-col ul { padding-left: 16px; margin: 0; }
+    .benefit-col li { font-size: 13px; line-height: 1.6; margin-bottom: 6px; color: #2A2A2A; }
+
+    /* Sections landing */
+    .landing-section-item {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0;
+      border-bottom: 1px solid #E8E6E1;
+      align-items: flex-start;
+      break-inside: avoid;
+    }
+    .landing-section-item:last-child { border-bottom: none; }
+    .ls-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: #D8D4CE;
+      min-width: 36px;
+      padding-top: 1px;
+    }
+    .ls-content { flex: 1; }
+    .ls-title { font-size: 14.5px; font-weight: 600; color: #1A1A1A; margin-bottom: 3px; }
+    .ls-desc { font-size: 13px; line-height: 1.55; color: #666; }
+
+    /* Tag row */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 5px 12px;
+      background: #ECEAE5;
+      border-radius: 3px;
+      color: #444;
+    }
+
+    /* Positioning block */
+    .pos-block {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0 16px;
+    }
+    .pos-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #AAA;
+      padding: 8px 0;
+      border-bottom: 1px solid #E8E6E1;
+      align-self: center;
+      white-space: nowrap;
+      padding-right: 16px;
+    }
+    .pos-value {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #2A2A2A;
+      padding: 8px 0;
+      border-bottom: 1px solid #E8E6E1;
+    }
+    .pos-label:last-of-type, .pos-value:last-child { border-bottom: none; }
+
+    /* CTA boxes */
+    .cta-box {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      break-inside: avoid;
+    }
+    .cta-box:last-child { margin-bottom: 0; }
+    .cta-box.primary { background: #1A1A1A; }
+    .cta-box.secondary { background: #F0EDE8; }
+    .cta-badge {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      border-radius: 2px;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+    .cta-box.primary .cta-badge { background: #444; color: #DDD; }
+    .cta-box.secondary .cta-badge { background: #DDD; color: #666; }
+    .cta-text { font-size: 14px; line-height: 1.55; }
+    .cta-box.primary .cta-text { color: #F5F4F1; }
+    .cta-box.secondary .cta-text { color: #2A2A2A; }
+
+    /* Emotion grid */
+    .emotion-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .emotion-item {
+      background: #F0EDE8;
+      padding: 18px 20px;
+      border-radius: 3px;
+    }
+    .emotion-name { font-size: 15px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
+    .emotion-desc { font-size: 12.5px; line-height: 1.55; color: #666; }
+
+    /* Valores */
+    .valor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .valor-item {
+      background: #F0EDE8;
+      padding: 16px 18px;
+    }
+    .valor-name { font-size: 14px; font-weight: 700; color: #1A1A1A; margin-bottom: 4px; }
+    .valor-desc { font-size: 12.5px; line-height: 1.5; color: #666; }
+
+    /* Tone grid */
+    .tone-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .tone-item { background: #F0EDE8; padding: 16px 18px; }
+    .tone-context { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #AAA; margin-bottom: 6px; }
+    .tone-desc { font-size: 13.5px; line-height: 1.55; color: #2A2A2A; }
+
+    /* Print */
+    @page { size: letter; margin: 0; }
+    @media print {
+      html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      html, body { margin: 0; padding: 0; background: #FAFAF8; }
+      .doc { max-width: none !important; margin: 0 !important; padding: 0 0.75in !important; box-shadow: none !important; }
+      .hdr-space, .ftr-space { display: table-cell; height: 0.65in; }
+      h1, h2, h3, h4 { break-after: avoid; }
+      .section { break-inside: avoid-page; }
+      .screen-only { display: none !important; }
+    }
+  </style>
+</helmet>
+
+<main class="doc">
+  <table class="doc-frame" role="presentation">
+    <thead><tr><td class="hdr-space"></td></tr></thead>
+    <tbody><tr><td>
+
+      <!-- COVER -->
+      <div class="cover">
+        <p class="cover-label">Documento Estratégico Confidencial</p>
+        <h1>Product &amp; Brand Brief</h1>
+        <p class="cover-sub">MypiCuadre — Sistema de Punto de Venta Offline</p>
+        <div class="cover-meta">
+          <div class="meta-item">
+            <span class="meta-label">Producto</span>
+            <span class="meta-value">MypiCuadre</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Tipo</span>
+            <span class="meta-value">PWA / Android</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Mercado</span>
+            <span class="meta-value">Pequeños negocios en Cuba</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Preparado por</span>
+            <span class="meta-value">Equipo Estratégico</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Versión</span>
+            <span class="meta-value">1.0 — Junio 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 01 RESUMEN EJECUTIVO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 class="section-title">Resumen Ejecutivo</h2>
+        </div>
+        <p>MypiCuadre es una aplicación web progresiva (PWA) instalable en Android, diseñada exclusivamente para dueños de pequeños negocios en Cuba. Su núcleo es operar de forma totalmente independiente de la conexión a internet: todos los datos se almacenan en el propio dispositivo del negocio, sin requerir servidores externos ni infraestructura técnica.</p>
+        <p>El producto resuelve los tres problemas más urgentes del pequeño comerciante cubano: el error en el cobro con múltiples monedas (MN, USD, MLC), la imposibilidad de cuadrar la caja con precisión sin hacer cálculos manuales, y la falta de control sobre lo que ocurre en el negocio cuando el dueño no está presente. A esto se suma su gestión integral de turnos, inventario en tiempo real, auditoría inmutable y exportación de reportes.</p>
+        <p>MypiCuadre se posiciona como el único POS diseñado desde cero para la realidad cubana: multimoneda nativa, offline-first, instalable sin tiendas de aplicaciones y con verificación de licencia local que garantiza funcionamiento incluso si el proveedor desaparece.</p>
+      </div>
+
+      <!-- 02 PROBLEMAS REALES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 class="section-title">Problemas Reales que Resuelve</h2>
+        </div>
+        <ul>
+          <li><strong>Conectividad precaria:</strong> el internet en Cuba es intermitente, lento y costoso. Un negocio no puede depender de la nube para operar.</li>
+          <li><strong>Errores de cobro en multimoneda:</strong> calcular cambio entre MN, USD o una combinación de ambas es fuente directa de pérdidas económicas y conflictos.</li>
+          <li><strong>Cuadre de caja manual:</strong> proceso tedioso, propenso a errores y fuente de estrés cotidiano para el dueño y sus vendedores.</li>
+          <li><strong>Desconfianza hacia vendedores:</strong> sin registro inmutable e independiente, el dueño no puede saber qué ocurrió en su ausencia.</li>
+          <li><strong>Inventario desactualizado:</strong> sin descuento automático de stock, el negocio no sabe cuánto tiene hasta hacer un conteo manual.</li>
+          <li><strong>Sin visibilidad a distancia:</strong> el dueño que está fuera no tiene acceso a cifras, turnos ni incidencias en tiempo real.</li>
+          <li><strong>Barreras de instalación:</strong> las soluciones de mercado requieren internet permanente, servidores, o están en tiendas de aplicaciones inaccesibles.</li>
+          <li><strong>Historial alterable:</strong> en registros manuales (cuadernos), la información se puede perder, modificar o manipular sin dejar rastro.</li>
+          <li><strong>Sin separación de roles:</strong> sin una herramienta adecuada, el dueño no puede darle acceso parcial a un vendedor sin exponerle información sensible (costos, márgenes, reportes).</li>
+        </ul>
+      </div>
+
+      <!-- 03 PÚBLICO OBJETIVO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">03</span>
+          <h2 class="section-title">Público Objetivo</h2>
+        </div>
+        <p><strong>Primario:</strong> Dueños de pequeños negocios en Cuba que operan con vendedores por turno.</p>
+        <ul>
+          <li>Tipología de negocio: bodegas, tiendas particulares, cafeterías, puntos de venta, quioscos.</li>
+          <li>Tamaño: 1 a ~10 empleados / vendedores.</li>
+          <li>Dispositivos: Android (smartphones de gama media o baja).</li>
+          <li>Conectividad: limitada, intermitente o inexistente.</li>
+          <li>Nivel técnico: básico o medio — sin conocimientos de informática empresarial.</li>
+          <li>Economía: operan simultáneamente con MN, USD y en algunos casos MLC.</li>
+          <li>Geografía: Cuba, predominantemente zonas urbanas y semi-urbanas.</li>
+        </ul>
+        <p><strong>Secundario:</strong> Dueños con múltiples puntos de venta (función premium) que necesitan visibilidad consolidada de todos sus negocios.</p>
+      </div>
+
+      <!-- 04 BUYER PERSONAS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">04</span>
+          <h2 class="section-title">Buyer Personas</h2>
+        </div>
+
+        <div class="persona-card">
+          <p class="persona-name">Reinaldo — "El Dueño Desconfiado"</p>
+          <p class="persona-role">45 años · Dueño de bodega · 2–3 vendedores</p>
+          <div class="persona-grid">
+            <div>
+              <div class="persona-field-label">Situación</div>
+              <div class="persona-field-value">No puede estar presente todo el día. Tiene vendedores de turno. Ha tenido discrepancias de caja sin poder explicarlas.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Motivación principal</div>
+              <div class="persona-field-value">Control total aunque no esté en el negocio. Saber si le están robando o si son errores.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Frustraciones</div>
+              <div class="persona-field-value">Cuadernos que "cuadran" pero el dinero no aparece. No poder probar nada.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Objeción clave</div>
+              <div class="persona-field-value">"¿Cómo sé que esto no lo pueden borrar también los vendedores?"</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="persona-card">
+          <p class="persona-name">Yanelis — "La Emprendedora en Crecimiento"</p>
+          <p class="persona-role">32 años · Dueña de cafetería · 1–2 ayudantes</p>
+          <div class="persona-grid">
+            <div>
+              <div class="persona-field-label">Situación</div>
+              <div class="persona-field-value">Vende productos en MN y USD. Con frecuencia cobra en una moneda y devuelve en otra. Quiere crecer pero siente que todo está desorganizado.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Motivación principal</div>
+              <div class="persona-field-value">Evitar pérdidas por errores de cálculo y tener su negocio más organizado y profesional.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Frustraciones</div>
+              <div class="persona-field-value">Hacer cuentas en la cabeza, no saber cuánto ganó realmente, no tener historial de ventas.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Objeción clave</div>
+              <div class="persona-field-value">"¿Será muy complicada de usar? No tengo tiempo para aprender algo difícil."</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="persona-card">
+          <p class="persona-name">Carlos — "El Multinegocios"</p>
+          <p class="persona-role">50 años · Varios puntos de venta · Gestión remota</p>
+          <div class="persona-grid">
+            <div>
+              <div class="persona-field-label">Situación</div>
+              <div class="persona-field-value">Tiene 2–3 puntos de venta con vendedores en cada uno. Recibe reportes verbales que no puede verificar.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Motivación principal</div>
+              <div class="persona-field-value">Visibilidad consolidada. Saber exactamente qué pasó en cada punto sin depender de lo que le cuenten.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Frustraciones</div>
+              <div class="persona-field-value">Información inconsistente entre puntos, sin forma de comparar ni auditar.</div>
+            </div>
+            <div>
+              <div class="persona-field-label">Objeción clave</div>
+              <div class="persona-field-value">"¿Puedo ver todos mis negocios desde un solo lugar?"</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 05 JOBS TO BE DONE -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">05</span>
+          <h2 class="section-title">Jobs To Be Done</h2>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando cierro el turno, quiero saber en segundos si la caja cuadra, para no quedarme con dudas ni hacer cálculos manuales."</p>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando cobro en USD y tengo que devolver en MN, quiero que algo me diga exactamente cuánto dar, para no perder dinero por error de cálculo."</p>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando no estoy en mi negocio, quiero ver qué vendieron mis vendedores y cuánto entró en caja, para tener control aunque esté ausente."</p>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando hay una diferencia en caja, quiero saber exactamente quién hizo qué y cuándo, para poder identificar si fue un error o algo peor."</p>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando hago inventario, quiero comparar lo que hay físicamente con lo que dice el sistema, para detectar pérdidas o mermas que no veo."</p>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando se va el internet, quiero que mi negocio siga funcionando exactamente igual, para no depender de la señal para trabajar."</p>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando necesito mostrarle al dueño el resumen del turno, quiero poder enviárselo por WhatsApp, para que lo tenga sin tener que estar presente."</p>
+        </div>
+        <div class="jtbd-item">
+          <p>"Cuando un vendedor hace una extracción de caja, quiero que quede registrado con mi autorización, para que no haya forma de que ocurra sin mi consentimiento."</p>
+        </div>
+      </div>
+
+      <!-- 06 DIFERENCIADORES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">06</span>
+          <h2 class="section-title">Diferenciadores</h2>
+        </div>
+        <ul>
+          <li><strong>Offline-first por diseño:</strong> no es una app cloud con modo sin conexión. Fue construida desde cero para vivir en el dispositivo, sin servidor.</li>
+          <li><strong>Multimoneda nativa MN/USD/MLC:</strong> no es un complemento ni una configuración adicional. Es la función central del cobro.</li>
+          <li><strong>Licencia con verificación local (ECDSA P-256):</strong> la app funciona aunque el proveedor deje de operar. No hay servidor de activación del que depender.</li>
+          <li><strong>Auditoría append-only inmutable:</strong> ninguna acción se puede borrar ni editar. Nada desaparece del historial.</li>
+          <li><strong>Semáforo de cuadre automático:</strong> no solo calcula la diferencia — la clasifica visualmente y la contextualiza con umbrales configurables.</li>
+          <li><strong>Datos propiedad del negocio:</strong> los datos viven en el teléfono del dueño. No hay servidor de terceros que los retenga.</li>
+          <li><strong>Instalación sin tiendas de aplicaciones:</strong> directo desde el navegador, sin Play Store, sin Google Account requerida.</li>
+          <li><strong>Separación de roles real:</strong> el vendedor nunca ve costos, márgenes, ni reportes. El dueño controla exactamente qué información es visible.</li>
+        </ul>
+      </div>
+
+      <!-- 07 VENTAJAS COMPETITIVAS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">07</span>
+          <h2 class="section-title">Ventajas Competitivas</h2>
+        </div>
+        <ul>
+          <li><strong>Cero dependencia de infraestructura externa:</strong> sin internet, sin hosting, sin soporte técnico continuo.</li>
+          <li><strong>Modelo económico accesible:</strong> licencia mensual, anual o perpetua sin costo de servidor. El dueño paga una vez y opera.</li>
+          <li><strong>Adaptado al marco legal y monetario cubano:</strong> las tres monedas del mercado están integradas nativamente, no hay workarounds.</li>
+          <li><strong>Resistencia al fallo del proveedor:</strong> si la empresa cierra mañana, la licencia sigue siendo válida y la app sigue funcionando.</li>
+          <li><strong>Curva de aprendizaje mínima para vendedores:</strong> la interfaz del vendedor está reducida a lo esencial — buscar, cobrar, cerrar.</li>
+          <li><strong>Privacidad por diseño:</strong> los datos del negocio nunca salen del dispositivo salvo que el dueño active la sync en la nube voluntariamente.</li>
+          <li><strong>Control anti-fraude integrado:</strong> la auditoría inmutable, el PIN de dueño para autorizaciones y el cuadre automático son capas de control nativas, no complementos.</li>
+        </ul>
+      </div>
+
+      <!-- 08 UVP -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">08</span>
+          <h2 class="section-title">Propuesta Única de Valor (UVP)</h2>
+        </div>
+        <div class="uvp-block">
+          <p>MypiCuadre es el único sistema de punto de venta diseñado para la realidad cubana: funciona sin internet, cuadra tu caja automáticamente en MN y USD, y te da control total de tu negocio aunque no estés presente — todo en tu teléfono, sin servidores, sin técnicos.</p>
+        </div>
+      </div>
+
+      <!-- 09 POSICIONAMIENTO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">09</span>
+          <h2 class="section-title">Posicionamiento</h2>
+        </div>
+        <div class="pos-block">
+          <span class="pos-label">Categoría</span>
+          <span class="pos-value">Sistema de gestión de punto de venta (POS)</span>
+          <span class="pos-label">Para</span>
+          <span class="pos-value">Dueños de pequeños negocios en Cuba con vendedores por turno</span>
+          <span class="pos-label">Que necesitan</span>
+          <span class="pos-value">Control de ventas, caja e inventario sin depender de internet ni infraestructura técnica</span>
+          <span class="pos-label">MypiCuadre es</span>
+          <span class="pos-value">El único POS offline-first diseñado para la economía trimoneda cubana</span>
+          <span class="pos-label">A diferencia de</span>
+          <span class="pos-value">Soluciones cloud (requieren internet permanente) y registros manuales (sin control, alterables)</span>
+          <span class="pos-label">Porque</span>
+          <span class="pos-value">Fue construido desde cero para funcionar sin señal, con MN/USD/MLC integradas nativamente y datos que pertenecen al negocio, no al proveedor</span>
+        </div>
+      </div>
+
+      <!-- 10 PERSONALIDAD DE MARCA -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">10</span>
+          <h2 class="section-title">Personalidad de Marca</h2>
+        </div>
+        <div class="def-grid">
+          <div class="def-cell">
+            <div class="def-cell-label">Confiable</div>
+            <p>Hace lo que dice. No promete lo que no puede. Declara abiertamente sus limitaciones (sin iOS nativo, sin facturación fiscal). Su credibilidad se construye sobre la honestidad.</p>
+          </div>
+          <div class="def-cell">
+            <div class="def-cell-label">Directo</div>
+            <p>Sin tecnicismos, sin adornos. Habla claro, va al punto. Entiende que el dueño de una bodega no tiene tiempo para marketing corporativo.</p>
+          </div>
+          <div class="def-cell">
+            <div class="def-cell-label">Cubano</div>
+            <p>Usa el lenguaje cotidiano del contexto cubano. No imita marcas extranjeras. Entiende la economía trimoneda, la conectividad intermitente y la desconfianza ante lo que no funciona.</p>
+          </div>
+          <div class="def-cell">
+            <div class="def-cell-label">Moderno y accesible</div>
+            <p>Sofisticado por dentro, sencillo por fuera. La tecnología es el medio, no el mensaje. El usuario no necesita saber cómo funciona para usarlo.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11 VALORES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">11</span>
+          <h2 class="section-title">Valores</h2>
+        </div>
+        <div class="valor-grid">
+          <div class="valor-item">
+            <div class="valor-name">Control</div>
+            <div class="valor-desc">El dueño manda, siempre. La app es su herramienta, no su dependencia.</div>
+          </div>
+          <div class="valor-item">
+            <div class="valor-name">Confianza</div>
+            <div class="valor-desc">Datos inmutables. Auditoría total. Nada desaparece ni se puede manipular.</div>
+          </div>
+          <div class="valor-item">
+            <div class="valor-name">Autonomía</div>
+            <div class="valor-desc">Sin dependencias externas. Sin internet obligatorio. Sin infraestructura ajena.</div>
+          </div>
+          <div class="valor-item">
+            <div class="valor-name">Practicidad</div>
+            <div class="valor-desc">Resuelve problemas reales del día a día. Sin funciones decorativas.</div>
+          </div>
+          <div class="valor-item">
+            <div class="valor-name">Honestidad</div>
+            <div class="valor-desc">Transparencia total sobre capacidades y limitaciones. Lo que no hace, también se dice.</div>
+          </div>
+          <div class="valor-item">
+            <div class="valor-name">Privacidad</div>
+            <div class="valor-desc">Los datos son del negocio, no de la app ni del proveedor.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12 VOZ Y TONO -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">12</span>
+          <h2 class="section-title">Voz y Tono</h2>
+        </div>
+        <p style="margin-bottom:16px;"><strong>Voz (constante):</strong> Clara, directa, sin jerga tecnológica. Cercana pero profesional. Empática con la realidad del pequeño negocio cubano. Segura: afirma con convicción, no con evasivas.</p>
+        <div class="tone-grid">
+          <div class="tone-item">
+            <div class="tone-context">En la landing page</div>
+            <div class="tone-desc">Convincente y tranquilizador. Habla de problemas concretos que el dueño reconoce de inmediato. No promete el cielo, promete soluciones reales.</div>
+          </div>
+          <div class="tone-item">
+            <div class="tone-context">En comunicaciones de venta</div>
+            <div class="tone-desc">Empático y orientado a beneficios. Reconoce la frustración antes de ofrecer la solución.</div>
+          </div>
+          <div class="tone-item">
+            <div class="tone-context">En la app (UX copy)</div>
+            <div class="tone-desc">Funcional y preciso. Cada etiqueta, mensaje y confirmación es inequívoca. El usuario nunca debe adivinar qué va a pasar.</div>
+          </div>
+          <div class="tone-item">
+            <div class="tone-context">En mensajes de alerta/error</div>
+            <div class="tone-desc">Honesto sin alarmar. Describe lo que pasó, lo que significa y qué hacer. Sin términos técnicos.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13 EMOCIONES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">13</span>
+          <h2 class="section-title">Emociones que Debe Transmitir la Landing</h2>
+        </div>
+        <div class="emotion-grid">
+          <div class="emotion-item">
+            <div class="emotion-name">Tranquilidad</div>
+            <div class="emotion-desc">"Puedo confiar en esto. No voy a quedarme sin herramientas si se va el internet."</div>
+          </div>
+          <div class="emotion-item">
+            <div class="emotion-name">Control</div>
+            <div class="emotion-desc">"Con esto yo mando en mi negocio. No dependemos de que me cuenten."</div>
+          </div>
+          <div class="emotion-item">
+            <div class="emotion-name">Alivio</div>
+            <div class="emotion-desc">"Esto resuelve exactamente lo que me molestaba. Alguien entendió mi problema."</div>
+          </div>
+          <div class="emotion-item">
+            <div class="emotion-name">Confianza</div>
+            <div class="emotion-desc">"Es serio. No es un juguete. Puedo usarlo en mi negocio real."</div>
+          </div>
+          <div class="emotion-item">
+            <div class="emotion-name">Reconocimiento</div>
+            <div class="emotion-desc">"Hablan de mi realidad. Entienden cómo funciona un negocio aquí."</div>
+          </div>
+          <div class="emotion-item">
+            <div class="emotion-name">Esperanza</div>
+            <div class="emotion-desc">"Puedo tener un negocio organizado y profesional. No es solo para empresas grandes."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14+15 OBJECIONES -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">14–15</span>
+          <h2 class="section-title">Objeciones y Cómo Responderlas</h2>
+        </div>
+        <table class="obj-table">
+          <tbody>
+            <tr>
+              <td>¿De verdad funciona sin internet?</td>
+              <td>Todo se guarda en el teléfono. No hay servidor. La verificación de licencia es local. Se puede demostrar apagando la wifi: la app sigue funcionando exactamente igual.</td>
+            </tr>
+            <tr>
+              <td>¿Qué pasa si se rompe o pierde el teléfono?</td>
+              <td>Con la sincronización en la nube activada (opcional), los datos se recuperan en un nuevo dispositivo. Sin sync, los datos están en el dispositivo — igual que un cuaderno que se pierde. La sync es la solución recomendada para este riesgo.</td>
+            </tr>
+            <tr>
+              <td>Mis vendedores no saben de tecnología</td>
+              <td>La interfaz del vendedor tiene una sola misión: buscar producto, cobrar y cerrar turno. No hay menús complejos, no hay configuraciones. Si saben usar WhatsApp, pueden usar MypiCuadre.</td>
+            </tr>
+            <tr>
+              <td>¿No es lo mismo que llevar el cuaderno?</td>
+              <td>El cuaderno se puede alterar, perder o malinterpretar. MypiCuadre tiene auditoría inmutable que nadie puede modificar, cuadre automático que elimina errores de cálculo, y historial con usuario, hora y fecha de cada operación.</td>
+            </tr>
+            <tr>
+              <td>¿Cuánto cuesta? ¿Vale la pena?</td>
+              <td>Hay licencia demo gratuita para probarlo sin compromiso. Después, licencia mensual, anual o perpetua. Sin costo de servidor. Una sola diferencia de caja que detecte puede pagar meses de licencia.</td>
+            </tr>
+            <tr>
+              <td>¿Y si la empresa cierra o deja de funcionar?</td>
+              <td>La licencia es verificada localmente con criptografía. La app no necesita conectarse a ningún servidor para validar que funciona. Si el proveedor cierra mañana, la licencia sigue siendo válida y la app sigue operando.</td>
+            </tr>
+            <tr>
+              <td>¿Funciona en iPhone?</td>
+              <td>Funciona en Safari con limitaciones propias del sistema de Apple en PWAs. La versión con experiencia completa y garantizada es Android. Se recomienda usarla en un dispositivo Android.</td>
+            </tr>
+            <tr>
+              <td>¿Mis datos están seguros?</td>
+              <td>Los datos están en tu teléfono, no en ningún servidor externo. Solo tú los controlas. Si activas la sync en la nube, es tu elección — y puedes desactivarla en cualquier momento.</td>
+            </tr>
+            <tr>
+              <td>¿Es complicado de configurar?</td>
+              <td>En menos de 15 minutos está configurado con catálogo de productos, vendedores creados y primer turno abierto. El onboarding guía cada paso.</td>
+            </tr>
+            <tr>
+              <td>¿Qué pasa cuando vence la licencia?</td>
+              <td>La app avisa con anticipación antes del vencimiento. La renovación es sencilla. Con la licencia perpetua no hay preocupación por fechas de vencimiento.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 16-18 BENEFICIOS -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">16–18</span>
+          <h2 class="section-title">Beneficios</h2>
+        </div>
+        <div class="benefit-cols">
+          <div class="benefit-col">
+            <div class="benefit-col-title">Emocionales</div>
+            <ul>
+              <li>Paz mental al saber que la caja cuadra sin hacer cálculos</li>
+              <li>Confianza en los vendedores — o capacidad de detectar problemas con evidencia</li>
+              <li>Orgullo de tener un negocio organizado y moderno</li>
+              <li>Alivio de la incertidumbre de no saber qué pasó en tu ausencia</li>
+              <li>Sensación de control sobre tu patrimonio y tu negocio</li>
+              <li>Seguridad de que nada se puede borrar ni manipular</li>
+            </ul>
+          </div>
+          <div class="benefit-col">
+            <div class="benefit-col-title">Funcionales</div>
+            <ul>
+              <li>Cuadre automático de caja con semáforo visual configurable</li>
+              <li>Cálculo exacto de cambio en MN, USD y mezcla</li>
+              <li>Inventario en tiempo real actualizado con cada venta</li>
+              <li>Historial inmutable de todas las operaciones</li>
+              <li>Exportación de reportes en PDF y Excel</li>
+              <li>Gestión de vendedores con roles y permisos separados</li>
+              <li>Funcionamiento 100% offline sin excepciones</li>
+              <li>Envío de resumen de turno por WhatsApp</li>
+            </ul>
+          </div>
+          <div class="benefit-col">
+            <div class="benefit-col-title">Económicos</div>
+            <ul>
+              <li>Evita pérdidas por errores de cobro en multimoneda</li>
+              <li>Detecta discrepancias de caja antes de que se acumulen</li>
+              <li>Control de inventario reduce merma no detectada</li>
+              <li>Sin costo de servidor ni hosting</li>
+              <li>Sin necesidad de técnico para instalar o mantener</li>
+              <li>Licencia perpetua disponible: costo único, sin mensualidades</li>
+              <li>Demo gratuita para probar antes de invertir</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- 19 MENSAJES CLAVE -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">19</span>
+          <h2 class="section-title">Mensajes Clave</h2>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M1</span>
+          <span class="msg-text">Sin internet, sin servidor, sin problemas.</span>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M2</span>
+          <span class="msg-text">Tu caja cuadra sola. Tú decides qué hacer con la diferencia.</span>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M3</span>
+          <span class="msg-text">Controla tu negocio aunque no estés ahí.</span>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M4</span>
+          <span class="msg-text">MN, USD, mezcla — sin calculadora, sin errores.</span>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M5</span>
+          <span class="msg-text">Todo queda registrado. Nada se borra. Nadie puede mentirte.</span>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M6</span>
+          <span class="msg-text">Tu negocio en tu teléfono. Tus datos, tuyos.</span>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M7</span>
+          <span class="msg-text">Si saben usar WhatsApp, pueden usar MypiCuadre.</span>
+        </div>
+        <div class="message-item">
+          <span class="msg-num">M8</span>
+          <span class="msg-text">Diseñado para Cuba. No adaptado. Diseñado.</span>
+        </div>
+      </div>
+
+      <!-- 20 PALABRAS QUE USAR -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">20</span>
+          <h2 class="section-title">Palabras que Debemos Utilizar</h2>
+        </div>
+        <div class="word-grid">
+          <span class="word-tag use">control</span>
+          <span class="word-tag use">cuadre</span>
+          <span class="word-tag use">caja</span>
+          <span class="word-tag use">turno</span>
+          <span class="word-tag use">vendedor</span>
+          <span class="word-tag use">dueño</span>
+          <span class="word-tag use">negocio</span>
+          <span class="word-tag use">sin internet</span>
+          <span class="word-tag use">offline</span>
+          <span class="word-tag use">automático</span>
+          <span class="word-tag use">exacto</span>
+          <span class="word-tag use">historial</span>
+          <span class="word-tag use">registro</span>
+          <span class="word-tag use">tus datos</span>
+          <span class="word-tag use">tu negocio</span>
+          <span class="word-tag use">tranquilidad</span>
+          <span class="word-tag use">seguridad</span>
+          <span class="word-tag use">confianza</span>
+          <span class="word-tag use">MN</span>
+          <span class="word-tag use">USD</span>
+          <span class="word-tag use">sencillo</span>
+          <span class="word-tag use">real</span>
+          <span class="word-tag use">instalar</span>
+          <span class="word-tag use">verificar</span>
+          <span class="word-tag use">cambio exacto</span>
+          <span class="word-tag use">diferencia</span>
+          <span class="word-tag use">turno</span>
+          <span class="word-tag use">inventario</span>
+          <span class="word-tag use">stock</span>
+          <span class="word-tag use">auditoría</span>
+          <span class="word-tag use">sin borrar</span>
+          <span class="word-tag use">sin servidor</span>
+        </div>
+      </div>
+
+      <!-- 21 PALABRAS QUE EVITAR -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">21</span>
+          <h2 class="section-title">Palabras que Debemos Evitar</h2>
+        </div>
+        <div class="word-grid">
+          <span class="word-tag avoid">cloud</span>
+          <span class="word-tag avoid">SaaS</span>
+          <span class="word-tag avoid">ERP</span>
+          <span class="word-tag avoid">backend</span>
+          <span class="word-tag avoid">API</span>
+          <span class="word-tag avoid">servidor</span>
+          <span class="word-tag avoid">startup</span>
+          <span class="word-tag avoid">innovación</span>
+          <span class="word-tag avoid">disruptivo</span>
+          <span class="word-tag avoid">ecosistema</span>
+          <span class="word-tag avoid">plataforma</span>
+          <span class="word-tag avoid">solución integral</span>
+          <span class="word-tag avoid">optimizar</span>
+          <span class="word-tag avoid">potenciar</span>
+          <span class="word-tag avoid">empoderar</span>
+          <span class="word-tag avoid">gestión integral</span>
+          <span class="word-tag avoid">suite</span>
+          <span class="word-tag avoid">app</span>
+          <span class="word-tag avoid">sincronización</span>
+          <span class="word-tag avoid">tecnología</span>
+          <span class="word-tag avoid">digitalizar</span>
+          <span class="word-tag avoid">transformación</span>
+          <span class="word-tag avoid">herramienta</span>
+          <span class="word-tag avoid">solución</span>
+        </div>
+        <p style="margin-top:14px; font-size:13px; color:#888;">Nota: "herramienta" y "solución" no son prohibidas en sentido estricto, pero deben evitarse como sustitutos genéricos de una descripción concreta. Siempre nombrar qué hace específicamente.</p>
+      </div>
+
+      <!-- 22 OBJETIVOS DE CONVERSIÓN -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">22</span>
+          <h2 class="section-title">Objetivos de Conversión de la Landing</h2>
+        </div>
+        <div class="cta-box primary">
+          <span class="cta-badge">Primario</span>
+          <span class="cta-text"><strong>Activar una licencia Demo:</strong> el visitante descarga e instala la PWA y activa el período de prueba gratuito. Este es el evento de conversión principal — todo lo demás en la landing apunta aquí.</span>
+        </div>
+        <div class="cta-box secondary">
+          <span class="cta-badge">Secundario</span>
+          <span class="cta-text"><strong>Contacto directo:</strong> el visitante con dudas inicia una conversación por WhatsApp o formulario antes de tomar una decisión. Convierte visitantes indecisos en prospectos cualificados.</span>
+        </div>
+        <div class="cta-box secondary">
+          <span class="cta-badge">Terciario</span>
+          <span class="cta-text"><strong>Compra directa de licencia:</strong> visitantes que llegan ya convencidos (por recomendación o conocimiento previo) compran directamente sin pasar por el demo. No debe ser el foco principal de la landing.</span>
+        </div>
+      </div>
+
+      <!-- 23 ACCIONES DEL VISITANTE -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">23</span>
+          <h2 class="section-title">Acciones que Queremos que Haga el Visitante</h2>
+        </div>
+        <ol>
+          <li><strong>Descargar e instalar la PWA</strong> directamente desde la landing, sin pasar por una tienda de aplicaciones.</li>
+          <li><strong>Activar la licencia Demo</strong> para comenzar a probar sin compromiso económico.</li>
+          <li><strong>Ver una demostración del producto</strong> (video o demo interactivo) que le confirme que la app hace lo que promete antes de instalarse.</li>
+          <li><strong>Contactar por WhatsApp</strong> para resolver dudas específicas de su tipo de negocio.</li>
+          <li><strong>Compartir la landing con otro dueño de negocio</strong> — el boca a boca es el canal más efectivo en este mercado.</li>
+        </ol>
+      </div>
+
+      <!-- 24 SECCIONES DE LA LANDING -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-num">24</span>
+          <h2 class="section-title">Secciones que Debería Tener la Landing</h2>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">01</span>
+          <div class="ls-content">
+            <div class="ls-title">Hero — UVP + CTA principal</div>
+            <div class="ls-desc">El mensaje más importante de la landing en 2 líneas. El visitante debe entender en 5 segundos qué es y para quién es. CTA directo: instalar demo. Sin distracciones.</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">02</span>
+          <div class="ls-content">
+            <div class="ls-title">El Problema — Reconocimiento del dolor</div>
+            <div class="ls-desc">"¿Te pasa esto?" Lista de situaciones cotidianas que el dueño vive. El objetivo es que el visitante sienta que lo conocemos. Máximo 4–5 puntos de dolor concretos.</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">03</span>
+          <div class="ls-content">
+            <div class="ls-title">La Solución — Qué es MypiCuadre</div>
+            <div class="ls-desc">Presentación clara del producto: qué es, qué hace, en qué se diferencia. Sin tecnicismos. Con énfasis en offline, multimoneda y control.</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">04</span>
+          <div class="ls-content">
+            <div class="ls-title">Funciones Clave — Con iconografía</div>
+            <div class="ls-desc">4–6 funciones principales presentadas con icono, título corto y una línea de descripción. Cuadre automático, multimoneda, offline, inventario, auditoría, vendedores.</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">05</span>
+          <div class="ls-content">
+            <div class="ls-title">Cómo Funciona — Proceso simplificado</div>
+            <div class="ls-desc">3 pasos: instalar, configurar, abrir turno. Elimina la percepción de complejidad. Puede incluir capturas de pantalla reales de la app.</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">06</span>
+          <div class="ls-content">
+            <div class="ls-title">Prueba Social — Testimonios</div>
+            <div class="ls-desc">Testimonios reales de dueños de negocios. Si no hay aún, casos de uso hipotéticos pero creíbles. La credibilidad aquí es crítica para este mercado.</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">07</span>
+          <div class="ls-content">
+            <div class="ls-title">Precios — Tipos de licencia</div>
+            <div class="ls-desc">Demo gratuita / Mensual / Anual / Perpetua. Tabla simple. Resaltar la demo. Incluir lo que NO se paga (sin servidor, sin instalación técnica).</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">08</span>
+          <div class="ls-content">
+            <div class="ls-title">Preguntas Frecuentes — Manejo de objeciones</div>
+            <div class="ls-desc">8–10 preguntas que responden directamente a las objeciones identificadas. Especialmente: "¿Funciona sin internet de verdad?", "¿Qué pasa si se rompe el teléfono?", "¿Qué pasa si la empresa cierra?"</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">09</span>
+          <div class="ls-content">
+            <div class="ls-title">CTA Final — Segunda oportunidad de conversión</div>
+            <div class="ls-desc">Para quienes llegaron hasta el final. Repetir el mensaje central y el CTA de instalación. Añadir opción de contacto directo por WhatsApp.</div>
+          </div>
+        </div>
+        <div class="landing-section-item">
+          <span class="ls-num">10</span>
+          <div class="ls-content">
+            <div class="ls-title">Footer — Contacto y legales</div>
+            <div class="ls-desc">WhatsApp, correo de contacto, información mínima legal. Sin sobrecargar. Puede incluir nota honesta sobre limitaciones (sin iOS nativo, sin facturación fiscal).</div>
+          </div>
+        </div>
+      </div>
+
+    </td></tr></tbody>
+    <tfoot><tr><td class="ftr-space"></td></tr></tfoot>
+  </table>
+</main>
+</x-dc>
+<script>
+(async () => {
+  if (!document.title || !document.title.trim()) document.title = "MypiCuadre - Product & Brand Brief";
+  // Prepend so page-supplied @page / break rules (deck-stage's margin:0,
+  // author CSS) keep source-order precedence over the baseline.
+  const baseCss = document.createElement('style');
+  baseCss.textContent = "@media print {\n  figure, table { break-inside: avoid; }\n  *, *::before, *::after {\n    print-color-adjust: exact; -webkit-print-color-adjust: exact;\n    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;\n    animation-delay: -99s !important; animation-duration: .001s !important;\n    animation-iteration-count: 1 !important; animation-fill-mode: both !important;\n    animation-play-state: running !important; transition-duration: 0s !important;\n  }\n}";
+  document.head.prepend(baseCss);
+  if (document.readyState === 'loading') {
+    await new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }));
+  }
+  let ds = document.querySelector('deck-stage');
+  // whenDefined never resolves when nothing registers the element, so only
+  // await it when a <deck-stage> tag exists (and race a timeout regardless).
+  if (ds && !customElements.get('deck-stage')) {
+    try {
+      await Promise.race([
+        customElements.whenDefined('deck-stage'),
+        new Promise((r) => setTimeout(r, 3000)),
+      ]);
+    } catch (e) {}
+    ds = document.querySelector('deck-stage');
+  }
+  // dc-runtime assigns window.DCLogic at init and mounts into #dc-root on
+  // DOMContentLoaded; settle on that subtree so React has rendered before
+  // print(). Non-DC pages fall through to weighing body.
+  const isDc = !ds && 'DCLogic' in window;
+  const settleRoot = ds || (isDc ? document.getElementById('dc-root') : null) || document.body;
+  if (settleRoot) {
+    // Weigh only content children — skip script/style/template so inline
+    // Babel/CSS doesn't register as stable "content" before the framework
+    // has mounted anything.
+    const MEDIA = 'img,svg,canvas,video,picture,iframe,embed,object';
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of settleRoot.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll(MEDIA).length + (c.matches(MEDIA) ? 1 : 0);
+      }
+      return text + media * 100;
+    };
+    // "Non-zero and stable" alone is not sufficient to mean rendered: generic
+    // body can carry a static shell while async main content is pending, and
+    // #dc-root can carry the root DC's static text while child refs are still
+    // .sc-placeholder boxes. Gate generic on readyState 'complete', and never
+    // accept stability while a dc-runtime placeholder is present.
+    const isGeneric = settleRoot === document.body;
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      const ready =
+        (!isGeneric || document.readyState === 'complete') &&
+        !settleRoot.querySelector('.sc-placeholder');
+      if (n > 0 && n === last && ready) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  // Project support.js may predate runtime default-seeding; push via bridge.
+  if (isDc && window.__dcSetProps && window.__dcRootName) {
+    try {
+      const dpEl = document.querySelector('script[data-dc-script]');
+      const meta = JSON.parse((dpEl && dpEl.getAttribute('data-props')) || '{}');
+      const bag = {};
+      for (const k in meta)
+        if (k[0] !== '$' && meta[k] && meta[k].default !== undefined)
+          bag[k] = meta[k].default;
+      if (Object.keys(bag).length) {
+        window.__dcSetProps(window.__dcRootName(), bag);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    } catch (e) {}
+  }
+  // Reveal content gated on scroll or visibility before printing. Lazy <img>,
+  // IntersectionObserver fade-ins, and collapsed <details> don't render while
+  // off-screen, so a long page would print with them blank or closed. Open
+  // every <details>, force native-lazy images eager, and scroll the document
+  // through its full height to trip lazy-load + IO; then wait (bounded) for the
+  // newly-triggered images. Inert for deck-stage (slides aren't scroll-gated).
+  try {
+    for (const d of document.querySelectorAll('details')) d.open = true;
+    for (const img of document.querySelectorAll('img[loading="lazy"]'))
+      img.loading = 'eager';
+    const scroller = document.scrollingElement || document.documentElement;
+    const full = Math.max(scroller.scrollHeight, document.body.scrollHeight);
+    const step = window.innerHeight || 800;
+    for (let y = 0; y <= full; y += step) {
+      window.scrollTo(0, y);
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+    window.scrollTo(0, 0);
+    await Promise.race([
+      Promise.all(
+        [...document.images].map((img) =>
+          img.complete
+            ? null
+            : new Promise((res) => {
+                img.addEventListener('load', res, { once: true });
+                img.addEventListener('error', res, { once: true });
+              })
+        )
+      ),
+      new Promise((r) => setTimeout(r, 4000)),
+    ]);
+  } catch (e) {}
+  try { await document.fonts.ready; } catch (e) {}
+  // Jump every animation to its end state so print() never captures a slide
+  // mid-entrance. Ordering matters: the 0s-transition style must be live
+  // BEFORE data-deck-active is set so attribute-keyed transitions don't
+  // start a (now-0s) run from the pre-active base.
+  const st = document.createElement('style');
+  st.textContent = '*,*::before,*::after{animation-delay:-99s !important;animation-duration:.001s !important;animation-iteration-count:1 !important;animation-fill-mode:both !important;animation-play-state:running !important;transition-duration:0s !important}';
+  document.head.appendChild(st);
+  for (const d of document.querySelectorAll('deck-stage')) {
+    for (const c of d.children) {
+      const t = c.tagName;
+      if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+      c.setAttribute('data-deck-active', '');
+    }
+  }
+  // Re-append deck-stage's @page last so no author @page can add a margin and
+  // spill each full-bleed slide onto two sheets. Backstop for old copies.
+  if (ds) {
+    let pg = document.getElementById('deck-stage-print-page');
+    if (!pg) {
+      pg = document.createElement('style');
+      pg.textContent = '@page{size:' + (+ds.getAttribute('width') || 1920) +
+        'px ' + (+ds.getAttribute('height') || 1080) + 'px;margin:0}';
+    }
+    document.body.appendChild(pg);
+  }
+  try {
+    const sweep = () => {
+      for (const a of document.getAnimations()) {
+        try { a.finish(); } catch (e) {
+          try { a.currentTime = (a.effect && a.effect.getComputedTiming().duration) || 0; a.pause(); } catch (e2) {}
+        }
+      }
+    };
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+    sweep();
+    await new Promise((r) => requestAnimationFrame(r));
+  } catch (e) {}
+  // Size the PDF page to the rendered design unless the file opted into
+  // standard paper via @page{size:letter|A4|…}. Decks own their own @page.
+  // Wrappers (body, …) lose padding+margin so the frame sits at (0,0); the
+  // frame itself loses only margin — its padding is INSIDE the measured
+  // rect and must stay, or content shifts and leaves a gap at bottom/right.
+  var __m = null;
+  try { __m = (() => {
+  var docEl = document.documentElement;
+  var doc = { width: docEl.scrollWidth, height: docEl.scrollHeight };
+
+  var ds = document.querySelector('deck-stage');
+  if (ds) {
+    var dw = Number(ds.getAttribute('width')) || 1920;
+    var dh = Number(ds.getAttribute('height')) || 1080;
+    var n = typeof ds.length === 'number' ? ds.length : ds.children.length;
+    var idx = typeof ds.index === 'number' ? ds.index : 0;
+    var frames = [];
+    for (var i = 0; i < n; i++) frames.push({ left: 0, top: 0, width: dw, height: dh });
+    return { kind: 'deck', doc: doc, frames: frames,
+      authored: frames.map(function(){return{width:true,height:true}}),
+      deck: { width: dw, height: dh, slideCount: n, index: idx },
+      signals: { paperPage: false, pxPage: false } };
+  }
+
+  var paperPage = false, pxPage = false;
+  var eachRule = function (fn) {
+    for (var s = 0; s < document.styleSheets.length; s++) {
+      var rs; try { rs = document.styleSheets[s].cssRules; } catch (e) { continue; }
+      for (var r = 0; r < rs.length; r++) {
+        fn(rs[r]);
+        if (rs[r].cssRules) for (var n = 0; n < rs[r].cssRules.length; n++) fn(rs[r].cssRules[n]);
+      }
+    }
+  };
+  eachRule(function (r) {
+    if (r.type !== 6) return;
+    var m = /\bsize\s*:\s*([^;}]+)/i.exec(r.cssText || '');
+    if (!m) return;
+    if (/\b(letter|a[3-5]|legal|ledger)\b/i.test(m[1])) paperPage = true;
+    if (/\d+(?:\.\d+)?px\b/i.test(m[1])) pxPage = true;
+  });
+  var signals = { paperPage: paperPage, pxPage: pxPage };
+
+  var pxVal = function (v) {
+    var m = /^(\d+(?:\.\d+)?)px$/.exec(v || ''); return m ? +m[1] : 0;
+  };
+  var authoredPx = function (el, prop) {
+    if (pxVal(el.style[prop])) return true;
+    var attr = el.getAttribute(prop);
+    if (attr && /^\d+$/.test(attr)) return true;
+    var hit = false;
+    eachRule(function (r) {
+      if (hit || r.type !== 1 || !r.style) return;
+      try { if (el.matches(r.selectorText) && pxVal(r.style[prop])) hit = true; } catch (e) {}
+    });
+    return hit;
+  };
+
+  var el = document.body, rootPxW = false;
+  for (;;) {
+    var kids = [];
+    for (var c = 0; c < el.children.length; c++) {
+      var t = el.children[c].tagName;
+      if (t !== 'SCRIPT' && t !== 'STYLE' && t !== 'TEMPLATE') kids.push(el.children[c]);
+    }
+    if (kids.length !== 1 || !(kids[0] instanceof HTMLElement)) break;
+    el.setAttribute('data-om-frame-wrap', '');
+    el = kids[0];
+    rootPxW = authoredPx(el, 'width');
+    if (rootPxW) break;
+  }
+  if (!rootPxW) rootPxW = authoredPx(el, 'width');
+
+  // @page{size:letter} alone is a flowing doc; with a px-width root it's a
+  // fixed sheet pretending to be paper — fall through and size to render.
+  if (paperPage && !rootPxW) {
+    return { kind: 'paper-doc', doc: doc, signals: signals,
+      frames: [{ left: 0, top: 0, width: doc.width, height: doc.height }],
+      authored: [{ width: false, height: false }] };
+  }
+
+  var sx = window.scrollX || 0, sy = window.scrollY || 0;
+  var rectOf = function (e) {
+    var r = e.getBoundingClientRect();
+    var oy; try { oy = getComputedStyle(e).overflowY; } catch (err) {}
+    var h = oy === 'visible' ? Math.max(r.height, e.scrollHeight || 0) : r.height;
+    return { left: r.left + sx, top: r.top + sy, width: r.width, height: h };
+  };
+
+  // Multi-frame: ≥2 visible non-fixed children, each with authored px width
+  // AND height, all within ±2px of each other. Off unless the page opts in
+  // via data-om-multi-frame on the stop element — guards against card grids
+  // and pricing tables that match the geometry but aren't separate canvases.
+  if (el.hasAttribute('data-om-multi-frame')) {
+    var cands = [];
+    for (var k = 0; k < el.children.length; k++) {
+      var ch = el.children[k];
+      var cs; try { cs = getComputedStyle(ch); } catch (e) { continue; }
+      if (cs.display === 'none' || cs.visibility === 'hidden' || cs.position === 'fixed') continue;
+      var rc = rectOf(ch);
+      if (rc.width < 2 || rc.height < 2) continue;
+      if (!authoredPx(ch, 'width') || !authoredPx(ch, 'height')) continue;
+      cands.push(rc);
+    }
+    if (cands.length >= 2) {
+      var w0 = cands[0].width, h0 = cands[0].height, ok = true;
+      for (var q = 1; q < cands.length; q++)
+        if (Math.abs(cands[q].width - w0) > 2 || Math.abs(cands[q].height - h0) > 2) ok = false;
+      if (ok) return { kind: 'multi-frame', doc: doc, signals: signals,
+        frames: cands, authored: cands.map(function(){return{width:true,height:true}}) };
+    }
+  }
+
+  el.setAttribute('data-om-frame', '');
+  return { kind: 'single-canvas', doc: doc, signals: signals,
+    frames: [rectOf(el)],
+    authored: [{ width: rootPxW, height: authoredPx(el, 'height') }] };
+})(); } catch (e) {}
+  var frame = null;
+  if (__m && __m.kind === 'single-canvas') {
+    var f = __m.frames && __m.frames[0];
+    if (f && f.width >= 200 && f.height >= 200) {
+      frame = f;
+      var fst = document.createElement('style');
+      fst.textContent = '@media print{@page{size:' + Math.ceil(f.width) + 'px ' +
+        Math.ceil(f.height) + 'px;margin:0}' +
+        'html,body,[data-om-frame-wrap]{padding:0!important;margin:0!important;background:none!important}' +
+        '[data-om-frame]{margin:0!important}}';
+      document.body.appendChild(fst);
+    }
+  }
+  // Relax break-inside on oversized elements. An element taller than a
+  // printable page can't honor break-inside: avoid — browsers either overflow
+  // it or push it whole to the next page, leaving a blank gap, then break it
+  // anyway at an arbitrary point. After the final layout (content revealed,
+  // animations jumped), find elements taller than a page that still compute
+  // break-inside: avoid and reset them to auto, so the browser breaks them at
+  // their children's boundaries instead (children keep their own avoid). PAGE_PX
+  // is a conservative portrait estimate at 96 CSS px/in — Letter/A4 usable
+  // height minus our 0.5in margins — so only clearly-oversized elements are
+  // touched and under-page elements still stay whole. Skipped for decks (slides
+  // are sized to the page) and for fixed-size canvases (frame set, or an author
+  // px-based @page) — runs as before for flowing docs on letter/A4.
+  try {
+    if (!ds && !frame && !(__m && __m.signals && __m.signals.pxPage)) {
+      const PAGE_PX = 1024;
+      // Our print defaults add a real @page margin only when the source has
+      // no @page of its own; computed style can't tell us (it reports screen
+      // media), so read the injected rule directly.
+      const defaults = document.querySelector('style[data-omelette-print-defaults]');
+      const pageInset = /@page\s*\{[^}]*margin/.test(defaults ? defaults.textContent || '' : '');
+      const SEL = 'section,article,figure,table,pre,blockquote,[class~="card" i],[class~="page" i],[class~="sheet" i]';
+      for (const el of document.body.querySelectorAll(SEL)) {
+        if (el instanceof HTMLElement && el.offsetHeight > PAGE_PX) {
+          el.setAttribute('data-om-oversized', '');
+          // Fake-paged docs simulate sheets with over-tall break-after:page
+          // boxes; honoring the break spills half-blank pages and ends a
+          // colored box mid-sheet. Flow them, and (only when we own the page
+          // inset) drop the redundant padding/background via the rule below.
+          const cs = getComputedStyle(el);
+          if (cs.breakAfter === 'page' || cs.pageBreakAfter === 'always') {
+            el.setAttribute('data-om-fakepage', '');
+          }
+        }
+      }
+      const ost = document.createElement('style');
+      ost.textContent = '@media print{' +
+        '[data-om-oversized]{break-inside:auto !important;page-break-inside:auto !important}' +
+        '[data-om-fakepage]{break-after:auto !important;page-break-after:auto !important}' +
+        (pageInset ? '[data-om-fakepage]{padding:0 !important;background:none !important}' : '') +
+        '}';
+      document.head.appendChild(ost);
+    }
+  } catch (e) {}
+  // macOS Preview renders Skia-PDF Luminosity soft-masks as opaque grey boxes;
+  // swap the CSS that triggers them for Preview-safe forms.
+  try {
+    for (const el of document.body.querySelectorAll('*')) {
+      const cs = getComputedStyle(el);
+
+      if (cs.boxShadow !== 'none' && cs.filter === 'none') {
+        const outs = [], kept = [];
+        for (const s of cs.boxShadow.split(/,(?![^(]*[)])/)) {
+          const t = s.trim();
+          const m = t.match(/^(rgba?[(][^)]+[)]) (-?[0-9.]+px) (-?[0-9.]+px) ([0-9.]+px) -?[0-9.]+px$/);
+          if (m && parseFloat(m[4]) > 0) outs.push('drop-shadow(' + m[2] + ' ' + m[3] + ' ' + m[4] + ' ' + m[1] + ')');
+          else kept.push(t);
+        }
+        if (outs.length) {
+          el.style.setProperty('filter', outs.join(' '), 'important');
+          el.style.setProperty('box-shadow', kept.join(', ') || 'none', 'important');
+        }
+      }
+
+      const mask = cs.maskImage && cs.maskImage !== 'none' ? cs.maskImage : cs.webkitMaskImage;
+      if (mask && mask !== 'none' && cs.filter === 'none') el.style.setProperty('filter', 'opacity(1)', 'important');
+    }
+  } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body>
+</html>
