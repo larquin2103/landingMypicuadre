@@ -1,3 +1,5 @@
+import AppMediaFrame from "@/components/AppMediaFrame";
+
 const PREVIEW_FEATURES = [
   "Resumen de ventas en tiempo real",
   "Búsqueda rápida de productos por nombre",
@@ -6,13 +8,10 @@ const PREVIEW_FEATURES = [
   "Exportación a PDF sin configuración",
 ];
 
-const INVENTORY_ROWS = [
-  { name: "Café molido 250g", stock: 48, stockColor: "var(--em)", price: "$25.00" },
-  { name: "Azúcar refino 1kg", stock: 5, stockColor: "var(--warn)", price: "$18.00" },
-  { name: "Aceite girasol 1L", stock: 22, stockColor: "var(--em)", price: "$55.00" },
-  { name: "Ron Añejo 700ml", stock: 1, stockColor: "var(--err)", price: "$120.00" },
-  { name: "Jabón de tocador", stock: 34, stockColor: "var(--em)", price: "$12.00" },
-  { name: "Arroz largo 1kg", stock: 60, stockColor: "var(--em)", price: "$22.00" },
+const PREVIEW_SLIDES = [
+  { src: "/app-media/Screenshot_20260628_133510.jpg", alt: "Catálogo de productos con stock y precio en MypiCuadre" },
+  { src: "/app-media/Screenshot_20260628_083951.jpg", alt: "Cuadre de caja por denominación en MypiCuadre" },
+  { src: "/app-media/Screenshot_20260628_085353.jpg", alt: "Reportes exportables en MypiCuadre" },
 ];
 
 function CheckIcon() {
@@ -43,25 +42,8 @@ export default function AppPreview() {
             <a href="#cta" className="btn btn-em">Instalar Demo y explorar</a>
           </div>
           <div className="rv">
-            <div className="prev-screen">
-              <div className="prev-screen-hd">
-                <div><div className="prev-screen-ttl">Inventario</div><div className="prev-screen-sub">24 productos · actualizado ahora</div></div>
-                <div className="prev-screen-btn">+ Agregar</div>
-              </div>
-              <div className="prev-tbl">
-                <div className="prev-tbl-hd">
-                  <div className="prev-tbl-hl">Producto</div>
-                  <div className="prev-tbl-hl">Stock</div>
-                  <div className="prev-tbl-hl">Precio</div>
-                </div>
-                {INVENTORY_ROWS.map((row) => (
-                  <div className="prev-row" key={row.name}>
-                    <span className="prev-pn">{row.name}</span>
-                    <span className="prev-ps" style={{ color: row.stockColor }}>{row.stock}</span>
-                    <span className="prev-pp">{row.price}</span>
-                  </div>
-                ))}
-              </div>
+            <div className="prev-screen prev-screen--media">
+              <AppMediaFrame slides={PREVIEW_SLIDES} intervalMs={4500} />
             </div>
           </div>
         </div>
