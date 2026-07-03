@@ -165,11 +165,17 @@ button { font: inherit; color: inherit; background: none; }
 ═══════════════════════════════ */
 .benefits { background: var(--s1); }
 .ben-g { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.ben-c { background: var(--bg); border: 1.5px solid var(--bd); border-radius: var(--r-xl); padding: 32px 28px 30px; transition: box-shadow .25s var(--ease), transform .25s var(--ease), border-color .25s; }
-.ben-c:hover { box-shadow: 0 8px 32px rgba(16,43,80,.12), 0 2px 8px rgba(16,43,80,.06); transform: translateY(-4px); border-color: var(--em); }
-.ben-ico { width: 48px; height: 48px; border-radius: var(--r-m); display: flex; align-items: center; justify-content: center; margin-bottom: 22px; }
-.ben-c h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.015em; }
-.ben-c p { font-size: 14px; line-height: 1.68; color: var(--t2); }
+.ben-c { background: linear-gradient(155deg, var(--navy) 0%, var(--navy-h) 100%); border-radius: var(--r-xl); padding: 32px 28px 30px; position: relative; overflow: hidden; box-shadow: 0 16px 48px rgba(16,43,80,.28), 0 4px 14px rgba(16,43,80,.14); transition: box-shadow .25s var(--ease), transform .25s var(--ease); }
+.ben-c::before { content: ''; position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(29,200,121,.18) 0%, transparent 70%); pointer-events: none; }
+.ben-c:hover { box-shadow: 0 22px 56px rgba(16,43,80,.34), 0 6px 18px rgba(16,43,80,.16); transform: translateY(-4px) perspective(600px) rotateX(1.5deg); }
+.ben-ico { width: 48px; height: 48px; border-radius: var(--r-m); background: linear-gradient(155deg, var(--em), var(--em-dk)); display: flex; align-items: center; justify-content: center; margin-bottom: 22px; box-shadow: 0 4px 14px rgba(29,200,121,.35), inset 0 1px 0 rgba(255,255,255,.25); position: relative; z-index: 1; transition: transform .25s var(--ease); }
+.ben-c:hover .ben-ico { transform: rotate(-4deg) scale(1.05); }
+.ben-c h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.015em; color: #FFF; position: relative; z-index: 1; }
+.ben-c p { font-size: 14px; line-height: 1.68; color: rgba(255,255,255,.6); position: relative; z-index: 1; }
+.ben-c--shot p { margin-bottom: 18px; }
+.card-shot { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #091729; opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease) .18s, transform .5s var(--ease) .18s; }
+.ben-c--shot .card-shot { margin: 0 -28px -30px; border-radius: 0 0 var(--r-xl) var(--r-xl); }
+.ben-c.in .card-shot { opacity: 1; transform: none; }
 
 /* ═══════════════════════════════
    APP PREVIEW
