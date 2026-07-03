@@ -196,11 +196,17 @@ button { font: inherit; color: inherit; background: none; }
 ═══════════════════════════════ */
 .feats-s { background: var(--s1); }
 .feat-g { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-.feat-c { background: var(--bg); border: 1.5px solid var(--bd); border-radius: var(--r-l); padding: 28px 26px; display: flex; gap: 18px; align-items: flex-start; transition: box-shadow .25s var(--ease), border-color .25s, transform .25s; }
-.feat-c:hover { box-shadow: 0 8px 28px rgba(16,43,80,.10), 0 2px 6px rgba(16,43,80,.05); border-color: var(--em); transform: translateY(-3px); }
-.feat-ico { width: 44px; height: 44px; border-radius: var(--r-m); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.feat-c h3 { font-size: 15px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.012em; }
-.feat-c p { font-size: 14px; color: var(--t2); line-height: 1.65; }
+.feat-c { background: linear-gradient(155deg, var(--navy) 0%, var(--navy-h) 100%); border-radius: var(--r-l); padding: 28px 26px; display: flex; flex-direction: column; gap: 0; position: relative; overflow: hidden; box-shadow: 0 16px 48px rgba(16,43,80,.28), 0 4px 14px rgba(16,43,80,.14); transition: box-shadow .25s var(--ease), transform .25s var(--ease); }
+.feat-c::before { content: ''; position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(29,200,121,.16) 0%, transparent 70%); pointer-events: none; }
+.feat-c:hover { box-shadow: 0 22px 56px rgba(16,43,80,.34), 0 6px 18px rgba(16,43,80,.16); transform: translateY(-3px) perspective(600px) rotateX(1.5deg); }
+.feat-c .feat-body { display: flex; flex-direction: column; gap: 0; }
+.feat-ico { width: 44px; height: 44px; border-radius: var(--r-m); background: linear-gradient(155deg, var(--em), var(--em-dk)); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 4px 14px rgba(29,200,121,.35), inset 0 1px 0 rgba(255,255,255,.25); position: relative; z-index: 1; flex-shrink: 0; transition: transform .25s var(--ease); }
+.feat-c:hover .feat-ico { transform: rotate(-4deg) scale(1.05); }
+.feat-c h3 { font-size: 15px; font-weight: 700; margin-bottom: 7px; letter-spacing: -0.012em; color: #FFF; position: relative; z-index: 1; }
+.feat-c p { font-size: 14px; color: rgba(255,255,255,.6); line-height: 1.65; position: relative; z-index: 1; }
+.feat-c--shot p { margin-bottom: 18px; }
+.feat-c--shot .card-shot { margin: 0 -26px -28px; border-radius: 0 0 var(--r-l) var(--r-l); }
+.feat-c.in .card-shot { opacity: 1; transform: none; }
 
 /* ═══════════════════════════════
    HOW IT WORKS
