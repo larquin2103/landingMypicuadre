@@ -236,24 +236,24 @@ button { font: inherit; color: inherit; background: none; }
 .cmp-row:hover { background: rgba(255,255,255,.03); }
 .cmp-c { padding: 14px 24px; font-size: 13.5px; display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateX(-8px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
 .cmp-tbl.in .cmp-c { opacity: 1; transform: none; }
-.cmp-tbl.in .cmp-row:nth-child(1) .cmp-c.feat { transition-delay: .05s; }
-.cmp-tbl.in .cmp-row:nth-child(1) .cmp-c.trad { transition-delay: .12s; }
-.cmp-tbl.in .cmp-row:nth-child(1) .cmp-c.mod { transition-delay: .19s; }
-.cmp-tbl.in .cmp-row:nth-child(2) .cmp-c.feat { transition-delay: .12s; }
-.cmp-tbl.in .cmp-row:nth-child(2) .cmp-c.trad { transition-delay: .19s; }
-.cmp-tbl.in .cmp-row:nth-child(2) .cmp-c.mod { transition-delay: .26s; }
-.cmp-tbl.in .cmp-row:nth-child(3) .cmp-c.feat { transition-delay: .19s; }
-.cmp-tbl.in .cmp-row:nth-child(3) .cmp-c.trad { transition-delay: .26s; }
-.cmp-tbl.in .cmp-row:nth-child(3) .cmp-c.mod { transition-delay: .33s; }
-.cmp-tbl.in .cmp-row:nth-child(4) .cmp-c.feat { transition-delay: .26s; }
-.cmp-tbl.in .cmp-row:nth-child(4) .cmp-c.trad { transition-delay: .33s; }
-.cmp-tbl.in .cmp-row:nth-child(4) .cmp-c.mod { transition-delay: .4s; }
-.cmp-tbl.in .cmp-row:nth-child(5) .cmp-c.feat { transition-delay: .33s; }
-.cmp-tbl.in .cmp-row:nth-child(5) .cmp-c.trad { transition-delay: .4s; }
-.cmp-tbl.in .cmp-row:nth-child(5) .cmp-c.mod { transition-delay: .47s; }
-.cmp-tbl.in .cmp-row:nth-child(6) .cmp-c.feat { transition-delay: .4s; }
-.cmp-tbl.in .cmp-row:nth-child(6) .cmp-c.trad { transition-delay: .47s; }
-.cmp-tbl.in .cmp-row:nth-child(6) .cmp-c.mod { transition-delay: .54s; }
+.cmp-tbl.in .cmp-row:nth-child(2) .cmp-c.feat { transition-delay: .05s; }
+.cmp-tbl.in .cmp-row:nth-child(2) .cmp-c.trad { transition-delay: .12s; }
+.cmp-tbl.in .cmp-row:nth-child(2) .cmp-c.mod { transition-delay: .19s; }
+.cmp-tbl.in .cmp-row:nth-child(3) .cmp-c.feat { transition-delay: .12s; }
+.cmp-tbl.in .cmp-row:nth-child(3) .cmp-c.trad { transition-delay: .19s; }
+.cmp-tbl.in .cmp-row:nth-child(3) .cmp-c.mod { transition-delay: .26s; }
+.cmp-tbl.in .cmp-row:nth-child(4) .cmp-c.feat { transition-delay: .19s; }
+.cmp-tbl.in .cmp-row:nth-child(4) .cmp-c.trad { transition-delay: .26s; }
+.cmp-tbl.in .cmp-row:nth-child(4) .cmp-c.mod { transition-delay: .33s; }
+.cmp-tbl.in .cmp-row:nth-child(5) .cmp-c.feat { transition-delay: .26s; }
+.cmp-tbl.in .cmp-row:nth-child(5) .cmp-c.trad { transition-delay: .33s; }
+.cmp-tbl.in .cmp-row:nth-child(5) .cmp-c.mod { transition-delay: .4s; }
+.cmp-tbl.in .cmp-row:nth-child(6) .cmp-c.feat { transition-delay: .33s; }
+.cmp-tbl.in .cmp-row:nth-child(6) .cmp-c.trad { transition-delay: .4s; }
+.cmp-tbl.in .cmp-row:nth-child(6) .cmp-c.mod { transition-delay: .47s; }
+.cmp-tbl.in .cmp-row:nth-child(7) .cmp-c.feat { transition-delay: .4s; }
+.cmp-tbl.in .cmp-row:nth-child(7) .cmp-c.trad { transition-delay: .47s; }
+.cmp-tbl.in .cmp-row:nth-child(7) .cmp-c.mod { transition-delay: .54s; }
 .cmp-c.feat { color: #FFF; font-weight: 500; }
 .cmp-c.trad { color: rgba(255,255,255,.4); background: rgba(0,0,0,.12); justify-content: center; text-decoration: line-through; font-size: 13px; }
 .cmp-c.mod { color: var(--em); background: rgba(29,200,121,.1); justify-content: center; font-weight: 600; font-size: 13px; }
@@ -396,4 +396,10 @@ button { font: inherit; color: inherit; background: none; }
     transform: none !important;
   }
   .amf-slide { transition: none !important; opacity: 1 !important; }
+  .card-shot, .cmp-c {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .tst-c.ft .tst-av { animation: none !important; }
 }
