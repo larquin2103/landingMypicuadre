@@ -10,7 +10,7 @@ const ROWS = [
 function CrossIcon() {
   return (
     <div className="xk">
-      <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M2 2l4 4M6 2L2 6" stroke="#aaa" strokeWidth="1.5" strokeLinecap="round" /></svg>
+      <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M2 2l4 4M6 2L2 6" stroke="rgba(255,255,255,.55)" strokeWidth="1.5" strokeLinecap="round" /></svg>
     </div>
   );
 }
