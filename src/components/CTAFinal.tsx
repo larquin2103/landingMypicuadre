@@ -1,3 +1,5 @@
+import AnimatedCounter from "@/components/AnimatedCounter";
+
 const TRUST_ITEMS = [
   "Sin tarjeta de crédito",
   "Demo completa gratuita",
@@ -18,7 +20,7 @@ export default function CTAFinal() {
         <div className="cta-f-i">
           <span className="ey ey-light">Empieza hoy</span>
           <h2>Tu caja cuadra desde<br />el primer día</h2>
-          <p>Únete a más de 500 negocios que controlan sus ventas, caja e inventario con MypiCuadre.</p>
+          <p>Únete a más de <strong><AnimatedCounter target={500} />+</strong> negocios que controlan sus ventas, caja e inventario con MypiCuadre.</p>
           <div className="cta-acts">
             <a href="#cta" className="btn btn-em btn-lg">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.5v8M7.5 9.5l-3-3M7.5 9.5l3-3M1.5 13h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
